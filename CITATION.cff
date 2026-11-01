@@ -1,11 +1,23 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite the article and the archived release."
 title: "insilico-clinval"
+abstract: >-
+  End-to-end in silico framework for truth-based validation and regression testing of clinical
+  genome sequencing pipelines, from simulated reads to reportable findings.
 type: software
 authors:
   - family-names: "Dvorský"
     given-names: "Bohuslav"
-    affiliation: "Faculty of Biomedical Engineering, Czech Technical University in Prague"
-version: "0.1.0.dev0"
-# doi: 10.5281/zenodo.XXXXXXX   # add after the first Zenodo release
-# license: custom Academic and Research License 1.0 (no SPDX id); add license-url to LICENSE.md after the repository is public
+    affiliation: "Department of Biomedical Informatics, Faculty of Biomedical Engineering, Czech Technical University in Prague"
+version: "1.0.0"
+date-released: "2026-11-01"
+repository-code: "https://github.com/ctu-fbme-dbi/insilico-clinval"
+keywords:
+  - clinical genome sequencing
+  - pipeline validation
+  - regression testing
+  - read simulation
+  - variant interpretation
+  - ACMG/AMP classification
+# doi: added after the Zenodo release
+# licence: Academic and Research License 1.0 (LICENSE.md); custom licence without an SPDX identifier

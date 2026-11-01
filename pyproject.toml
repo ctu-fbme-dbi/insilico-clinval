@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "insilico-clinval"
-version = "0.1.0.dev0"
+version = "1.0.0"
 description = "End-to-end in silico validation and regression testing of clinical genome sequencing pipelines, from simulated reads to reportable findings."
 readme = "README.md"
 requires-python = ">=3.10"

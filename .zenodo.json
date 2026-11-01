@@ -1,0 +1,20 @@
+{
+  "title": "insilico-clinval: end-to-end in silico validation and regression testing of clinical genome sequencing pipelines",
+  "upload_type": "software",
+  "description": "<p>End-to-end in silico framework for truth-based validation and regression testing of clinical genome sequencing pipelines, from simulated reads to reportable findings. It selects test variants, writes a phased truth VCF with expected-outcome metadata, simulates reads with Mason, runs the secondary and tertiary analysis through adapters, compares the findings with the truth and assigns every failure to a pipeline stage.</p><p>Source-available under the Academic and Research License 1.0 (LICENSE.md): free for academic research, teaching and noncommercial research; clinical, diagnostic and commercial use require a separate licence (COMMERCIAL-LICENSE.md).</p>",
+  "creators": [
+    {
+      "name": "Dvorský, Bohuslav",
+      "affiliation": "Department of Biomedical Informatics, Faculty of Biomedical Engineering, Czech Technical University in Prague"
+    }
+  ],
+  "keywords": [
+    "clinical genome sequencing",
+    "pipeline validation",
+    "regression testing",
+    "read simulation",
+    "variant interpretation",
+    "ACMG/AMP classification"
+  ],
+  "access_right": "open"
+}

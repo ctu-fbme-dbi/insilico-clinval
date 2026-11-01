@@ -187,8 +187,9 @@ tests/         unit/ (fixtures only), integration/ (external tools), fixtures/ (
 
 ## Citation and licence
 
-Please cite the article (reference to be added on publication); `CITATION.cff` holds the software
-citation. A release archived on Zenodo with a DOI will accompany the article.
+Please cite the article (reference to be added on publication) and the archived release;
+`CITATION.cff` holds the software citation. Release 1.0.0 is the version described in the article and
+is archived on Zenodo (DOI to be added). Changes are listed in `CHANGELOG.md`.
 
 The code is source-available under the Academic and Research License 1.0 (`LICENSE.md`): academic
 research, teaching and noncommercial research are free. Clinical, diagnostic and
