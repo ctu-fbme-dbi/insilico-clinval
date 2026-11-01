@@ -1,0 +1,109 @@
+# Fixture suite: uses only files in tests/fixtures/ (paths relative to this file).
+schema_version: 1
+suite:
+  name: fixture-suite
+  version: "0.1"
+  seed: 20260928
+
+reference:
+  build: GRCh38
+  fasta: ref.fa
+  # The fixture contigs are a few kb long; tiny PARs keep chrX:1-1000 pseudo-autosomal.
+  par_regions:
+    - { chrom: chrX, start: 1, end: 1000 }
+    - { chrom: chrY, start: 1, end: 500 }
+
+sources:
+  clinvar:
+    vcf: clinvar_mini.vcf
+    release: "2026-09-01"
+  giab:
+    truth_vcf: giab_mini.vcf
+    confident_bed: giab_confident.bed
+    release: "fixture-v1"
+  strata:
+    cmrg: strata_cmrg.bed
+
+constraints:
+  min_distance_bp: 500
+  allowed_variant_types: [snv, insertion, deletion, delins]
+  max_indel_length: 50
+  indel_ladder: [[1, 5], [6, 10], [11, 20], [21, 50]]
+
+selection:
+  - id: clinvar_plp_panel
+    category: curated
+    source: clinvar
+    clnsig_allow: [pathogenic, likely_pathogenic, pathogenic/likely_pathogenic]
+    min_stars: 2
+    genes: [GENEA, GENEB, GENEX]
+    per_gene: 2
+    required: true
+    compound_het: { phase: trans }
+    expected: { classification: [pathogenic, likely_pathogenic], reportable: true, level: both }
+    samples: [positive]
+
+  - id: clinvar_blb_panel
+    category: curated
+    source: clinvar
+    clnsig_allow: [benign, likely_benign, benign/likely_benign]
+    min_stars: 2
+    genes: [GENEA, GENEB, GENEX]
+    per_gene: 2
+    required: true
+    expected: { classification: [benign, likely_benign], reportable: false, level: both }
+    samples: [negative]
+
+  - id: standard_giab
+    category: standard
+    source: giab
+    counts: { snv: 2, deletion: 1 }
+    exclude_strata: [cmrg]
+    expected: { reportable: false, level: calling }
+    samples: [positive, negative]
+
+  - id: difficult_cmrg
+    category: difficult
+    source: giab
+    strata: [cmrg]
+    count: 2
+    expected: { reportable: false, level: calling }
+    samples: [positive, negative]
+
+  - id: indel_ladder
+    category: difficult
+    source: clinvar
+    clnsig_allow: [pathogenic, likely_pathogenic]
+    min_stars: 1
+    ladder_per_bin: 2
+    expected: { classification: [pathogenic, likely_pathogenic], reportable: true, level: both }
+    samples: [positive]
+
+  - id: synthetic_hom
+    category: synthetic_novel
+    source: explicit
+    zygosity: hom
+    variants:
+      - chrom: chr2
+        pos: 5100
+        ref: G
+        alt: T
+        gene: GENEC
+        classification: likely_pathogenic
+        acmg_criteria: [PVS1, PM2]
+        rationale: "novel nonsense in GENEC (fixture)"
+    expected: { classification: [pathogenic, likely_pathogenic], reportable: true, level: interpretation }
+    samples: [positive]
+
+samples:
+  - sample_id: positive
+    role: positive
+    sex: female
+    default_zygosity: het
+  - sample_id: negative
+    role: negative
+    sex: male
+    default_zygosity: het
+
+output:
+  directory: ../../runs/fixture

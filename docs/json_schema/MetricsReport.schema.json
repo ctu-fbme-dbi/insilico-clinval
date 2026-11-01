@@ -1,0 +1,269 @@
+{
+  "$defs": {
+    "CountRow": {
+      "additionalProperties": false,
+      "properties": {
+        "count": {
+          "title": "Count",
+          "type": "integer"
+        },
+        "metric": {
+          "title": "Metric",
+          "type": "string"
+        },
+        "subset": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Subset",
+          "type": "object"
+        }
+      },
+      "required": [
+        "metric",
+        "subset",
+        "count"
+      ],
+      "title": "CountRow",
+      "type": "object"
+    },
+    "Criterion": {
+      "additionalProperties": false,
+      "properties": {
+        "max_count": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Count"
+        },
+        "metric": {
+          "title": "Metric",
+          "type": "string"
+        },
+        "min_lower": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "lower Wilson bound",
+          "title": "Min Lower"
+        },
+        "min_point": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Min Point"
+        },
+        "subset": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "e.g. {held_out: 'true'}",
+          "title": "Subset",
+          "type": "object"
+        }
+      },
+      "required": [
+        "metric"
+      ],
+      "title": "Criterion",
+      "type": "object"
+    },
+    "CriterionResult": {
+      "additionalProperties": false,
+      "properties": {
+        "criterion": {
+          "$ref": "#/$defs/Criterion"
+        },
+        "observed": {
+          "description": "the value the criterion was judged on",
+          "title": "Observed",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "pass",
+            "fail",
+            "not_evaluable"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "criterion",
+        "status",
+        "observed"
+      ],
+      "title": "CriterionResult",
+      "type": "object"
+    },
+    "MetricRow": {
+      "additionalProperties": false,
+      "properties": {
+        "metric": {
+          "title": "Metric",
+          "type": "string"
+        },
+        "subset": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Subset",
+          "type": "object"
+        },
+        "value": {
+          "$ref": "#/$defs/Proportion"
+        }
+      },
+      "required": [
+        "metric",
+        "subset",
+        "value"
+      ],
+      "title": "MetricRow",
+      "type": "object"
+    },
+    "Proportion": {
+      "additionalProperties": false,
+      "description": "k of n with a 95 % Wilson score interval; value and bounds are null when n = 0.",
+      "properties": {
+        "k": {
+          "title": "K",
+          "type": "integer"
+        },
+        "lower": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Lower"
+        },
+        "n": {
+          "title": "N",
+          "type": "integer"
+        },
+        "upper": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Upper"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "k",
+        "n",
+        "value",
+        "lower",
+        "upper"
+      ],
+      "title": "Proportion",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Persisted as `metrics.json`.",
+  "properties": {
+    "acceptance": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "acceptance config name",
+      "title": "Acceptance"
+    },
+    "counts": {
+      "items": {
+        "$ref": "#/$defs/CountRow"
+      },
+      "title": "Counts",
+      "type": "array"
+    },
+    "criteria": {
+      "items": {
+        "$ref": "#/$defs/CriterionResult"
+      },
+      "title": "Criteria",
+      "type": "array"
+    },
+    "pipeline": {
+      "title": "Pipeline",
+      "type": "string"
+    },
+    "proportions": {
+      "items": {
+        "$ref": "#/$defs/MetricRow"
+      },
+      "title": "Proportions",
+      "type": "array"
+    },
+    "runs": {
+      "description": "run directories, as given",
+      "items": {
+        "type": "string"
+      },
+      "title": "Runs",
+      "type": "array"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version",
+    "pipeline",
+    "runs",
+    "proportions",
+    "counts"
+  ],
+  "title": "MetricsReport",
+  "type": "object"
+}

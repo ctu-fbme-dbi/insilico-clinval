@@ -1,0 +1,105 @@
+# Experimental indel-length test set "exp-indels-v5q" (supplementary experiment, 2026-10-28; not part of the
+# article's test sets, see flow/navrh_experimenty_indely_synteticke.md, experiments A and B).
+# ClinVar (>= 2 stars) insertions, deletions and delins in six length bins: 1-5, 6-10 and 11-20 bp
+# (the scope of the reference implementation) and 21-35, 36-50 and 51-100 bp (beyond it, to find
+# where calling stops). One suite instead of two halves the compute; results are split by bin.
+# Same setting as difficult_v5q: GIAB HG002 v5.0q background (record filters, <= 20 bp), simulation
+# from the GIAB-masked GRCh38, genome mode at 30x; the pipeline keeps its own reference.
+#
+# Expected outcomes: P/LP in ACMG SF v3.2 AD genes are reportable (level both); B/LB in the same
+# genes must not be reported (level both); ClinVar P/LP in any gene fill the bins at calling level.
+#
+#   clinval build-truth --suite configs/suites/exp_indels_v5q.yaml
+#   clinval simulate    --suite configs/suites/exp_indels_v5q.yaml --runtime configs/runtime/docker-local-build.yaml
+#   clinval compare ... --happy-gender --pipeline-reference <Sarek GATK.GRCh38 FASTA>
+schema_version: 1
+suite: { name: exp-indels-v5q, version: "0.1", seed: 20261028 }
+
+reference:
+  build: GRCh38
+  fasta: ../../data/reference/GRCh38_GIABv3_masked.fa
+
+sources:
+  clinvar:
+    vcf: ../../data/clinvar/clinvar_20260928.vcf.gz
+    release: "2026-09-28"
+  strata:
+    segdup: ../../data/strata/v3.6/GRCh38_segdups.bed.gz
+    low_mappability: ../../data/strata/v3.6/GRCh38_lowmappabilityall.bed.gz
+    homopolymer: ../../data/strata/v3.6/GRCh38_AllHomopolymers_ge7bp_imperfectge11bp_slop5.bed.gz
+    tandem_repeat: ../../data/strata/v3.6/GRCh38_AllTandemRepeats_le50bp_slop5.bed.gz
+    all_difficult: ../../data/strata/v3.6/GRCh38_alldifficultregions.bed.gz
+    bg_v5.0q: ../../data/giab/HG002_GRCh38_v5.0q_smvar.benchmark.bed
+
+constraints:
+  min_distance_bp: 500
+  allowed_variant_types: [insertion, deletion, delins]
+  max_indel_length: 100
+  indel_ladder: [[1, 5], [6, 10], [11, 20], [21, 35], [36, 50], [51, 100]]
+
+selection:
+  # ---- interpretation level: ACMG SF v3.2 AD genes (as in acmg_sf32_full1) ----
+  - id: sf_plp_ladder
+    category: curated
+    source: clinvar
+    clnsig_allow: [pathogenic, likely_pathogenic, pathogenic/likely_pathogenic]
+    min_stars: 2
+    genes: &sf_ad_genes [APC, BRCA1, BRCA2, PALB2, TP53, MLH1, MSH2, MSH6, PMS2, PTEN, VHL, FBN1, TNNT2, LDLR, MYH7, MYBPC3, TNNI3, ACTC1, MYL2, KCNQ1, ACVRL1, ENG, RYR1, HNF1A]
+    region_bed: ../regions/grch38_nuclear.bed   # genome mode simulates chr1-22, X, Y (no chrM)
+    ladder_per_bin: 15
+    expected: { classification: [pathogenic, likely_pathogenic], reportable: true, level: both }
+    samples: [positive]
+  - id: sf_blb_ladder
+    category: curated
+    source: clinvar
+    clnsig_allow: [benign, likely_benign, benign/likely_benign]
+    min_stars: 2
+    genes: *sf_ad_genes
+    region_bed: ../regions/grch38_nuclear.bed   # genome mode simulates chr1-22, X, Y (no chrM)
+    ladder_per_bin: 10
+    expected: { classification: [benign, likely_benign], reportable: false, level: both }
+    samples: [negative]
+
+  # ---- calling level: ClinVar P/LP in any gene, to fill every bin to >= 59 ----
+  - id: calling_ladder_positive
+    category: curated
+    source: clinvar
+    clnsig_allow: [pathogenic, likely_pathogenic, pathogenic/likely_pathogenic]
+    min_stars: 2
+    region_bed: ../regions/grch38_nuclear.bed   # genome mode simulates chr1-22, X, Y (no chrM)
+    ladder_per_bin: 25
+    expected: { classification: [pathogenic, likely_pathogenic], reportable: false, level: calling, basis: "calling-level control of the indel length bins" }
+    samples: [positive]
+  - id: calling_ladder_negative
+    category: curated
+    source: clinvar
+    clnsig_allow: [pathogenic, likely_pathogenic, pathogenic/likely_pathogenic]
+    min_stars: 2
+    region_bed: ../regions/grch38_nuclear.bed   # genome mode simulates chr1-22, X, Y (no chrM)
+    ladder_per_bin: 30
+    expected: { classification: [pathogenic, likely_pathogenic], reportable: false, level: calling, basis: "calling-level control of the indel length bins" }
+    samples: [negative]
+
+background:
+  name: GIAB_HG002
+  vcf: ../../data/giab/HG002_GRCh38_v5.0q_smvar.vcf.gz
+  bed: ../../data/giab/HG002_GRCh38_v5.0q_smvar.benchmark.bed
+  release: "v5.0q"
+  sex: male
+  restrict_to_bed: true
+  require_pass: true
+  max_length: 20
+  spanning_deletion: ref
+
+samples:
+  - { sample_id: positive, role: positive, sex: male }
+  - { sample_id: negative, role: negative, sex: male }
+
+simulation:
+  profile: ../profiles/illumina_2x150_30x_t8.yaml
+  mode: genome
+  genome_contigs: null   # chr1-22, chrX, chrY
+  mason_batch_bp: 500000000
+
+output:
+  directory: ../../runs/exp_indels_v5q

@@ -1,0 +1,8 @@
+# Panel/exome-like depth in region mode (planted loci only): 2 x 150 bp, 100x.
+schema_version: 1
+name: illumina-2x150-100x
+technology: illumina
+read_length: 150
+fragment: { model: normal, mean: 400, sd: 60 }
+coverage: 100
+threads: 1

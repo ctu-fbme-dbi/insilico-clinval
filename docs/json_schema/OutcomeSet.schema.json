@@ -1,0 +1,270 @@
+{
+  "$defs": {
+    "Classification": {
+      "enum": [
+        "pathogenic",
+        "likely_pathogenic",
+        "uncertain_significance",
+        "likely_benign",
+        "benign"
+      ],
+      "title": "Classification",
+      "type": "string"
+    },
+    "EvaluationLevel": {
+      "enum": [
+        "calling",
+        "interpretation",
+        "both"
+      ],
+      "title": "EvaluationLevel",
+      "type": "string"
+    },
+    "OutcomeClass": {
+      "description": "Finding-level outcome, ordered along the pipeline (first failing stage wins).",
+      "enum": [
+        "not_simulated",
+        "not_covered",
+        "mismapped",
+        "not_called",
+        "filtered",
+        "genotype_mismatch",
+        "not_annotated",
+        "misclassified",
+        "report_mismatch",
+        "correct",
+        "false_report"
+      ],
+      "title": "OutcomeClass",
+      "type": "string"
+    },
+    "OutcomeRecord": {
+      "additionalProperties": false,
+      "description": "Comparison result for one planted variant, or one false report (``variant_id`` null).",
+      "properties": {
+        "alt": {
+          "title": "Alt",
+          "type": "string"
+        },
+        "chrom": {
+          "title": "Chrom",
+          "type": "string"
+        },
+        "evaluation_level": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EvaluationLevel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "null for false reports"
+        },
+        "evidence": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": "Evidence",
+          "type": "object"
+        },
+        "expected_classification": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Classification"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "expected_reportable": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Reportable"
+        },
+        "gene": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "gene of the matched finding",
+          "title": "Gene"
+        },
+        "observed_classification": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Classification"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "observed_reported": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Observed Reported"
+        },
+        "outcome_class": {
+          "$ref": "#/$defs/OutcomeClass"
+        },
+        "pipeline": {
+          "title": "Pipeline",
+          "type": "string"
+        },
+        "pos": {
+          "title": "Pos",
+          "type": "integer"
+        },
+        "ref": {
+          "title": "Ref",
+          "type": "string"
+        },
+        "sample_id": {
+          "title": "Sample Id",
+          "type": "string"
+        },
+        "stage": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "last check passed, in pipeline order; null if none",
+          "title": "Stage"
+        },
+        "variant_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Variant Id"
+        }
+      },
+      "required": [
+        "variant_id",
+        "sample_id",
+        "pipeline",
+        "chrom",
+        "pos",
+        "ref",
+        "alt",
+        "evaluation_level",
+        "outcome_class",
+        "stage"
+      ],
+      "title": "OutcomeRecord",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Persisted as `sut/<pipeline>/compare/<sample_id>.outcomes.json`.",
+  "properties": {
+    "false_reports": {
+      "description": "sorted by position",
+      "items": {
+        "$ref": "#/$defs/OutcomeRecord"
+      },
+      "title": "False Reports",
+      "type": "array"
+    },
+    "parameters": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "title": "Parameters",
+      "type": "object"
+    },
+    "pipeline": {
+      "title": "Pipeline",
+      "type": "string"
+    },
+    "records": {
+      "description": "one per planted variant, by variant_id",
+      "items": {
+        "$ref": "#/$defs/OutcomeRecord"
+      },
+      "title": "Records",
+      "type": "array"
+    },
+    "sample_id": {
+      "title": "Sample Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version",
+    "sample_id",
+    "pipeline",
+    "parameters",
+    "records",
+    "false_reports"
+  ],
+  "title": "OutcomeSet",
+  "type": "object"
+}

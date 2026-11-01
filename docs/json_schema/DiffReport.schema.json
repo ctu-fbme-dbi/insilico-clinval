@@ -1,0 +1,358 @@
+{
+  "$defs": {
+    "CallingDelta": {
+      "additionalProperties": false,
+      "properties": {
+        "contig_group": {
+          "title": "Contig Group",
+          "type": "string"
+        },
+        "counts": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "description": "truth TP/FN, query FP of baseline and candidate",
+          "title": "Counts",
+          "type": "object"
+        },
+        "run": {
+          "title": "Run",
+          "type": "string"
+        },
+        "sample_id": {
+          "title": "Sample Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "run",
+        "sample_id",
+        "contig_group",
+        "counts"
+      ],
+      "title": "CallingDelta",
+      "type": "object"
+    },
+    "Change": {
+      "additionalProperties": false,
+      "properties": {
+        "alt": {
+          "title": "Alt",
+          "type": "string"
+        },
+        "baseline": {
+          "description": "baseline outcome (class / observed class / reported)",
+          "title": "Baseline",
+          "type": "string"
+        },
+        "candidate": {
+          "title": "Candidate",
+          "type": "string"
+        },
+        "chrom": {
+          "title": "Chrom",
+          "type": "string"
+        },
+        "gene": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Gene"
+        },
+        "kind": {
+          "enum": [
+            "new_failure",
+            "recovered",
+            "class_change",
+            "stage_change",
+            "false_report_added",
+            "false_report_removed"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "noise": {
+          "description": "also seen between the baseline and the noise run",
+          "title": "Noise",
+          "type": "boolean"
+        },
+        "pos": {
+          "title": "Pos",
+          "type": "integer"
+        },
+        "ref": {
+          "title": "Ref",
+          "type": "string"
+        },
+        "run": {
+          "title": "Run",
+          "type": "string"
+        },
+        "sample_id": {
+          "title": "Sample Id",
+          "type": "string"
+        },
+        "variant_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Variant Id"
+        }
+      },
+      "required": [
+        "kind",
+        "run",
+        "sample_id",
+        "variant_id",
+        "chrom",
+        "pos",
+        "ref",
+        "alt",
+        "gene",
+        "baseline",
+        "candidate",
+        "noise"
+      ],
+      "title": "Change",
+      "type": "object"
+    },
+    "Concordance": {
+      "additionalProperties": false,
+      "properties": {
+        "contig_group": {
+          "title": "Contig Group",
+          "type": "string"
+        },
+        "identical": {
+          "title": "Identical",
+          "type": "integer"
+        },
+        "only_baseline": {
+          "title": "Only Baseline",
+          "type": "integer"
+        },
+        "only_candidate": {
+          "title": "Only Candidate",
+          "type": "integer"
+        },
+        "run": {
+          "title": "Run",
+          "type": "string"
+        },
+        "sample_id": {
+          "title": "Sample Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "run",
+        "sample_id",
+        "contig_group",
+        "identical",
+        "only_baseline",
+        "only_candidate"
+      ],
+      "title": "Concordance",
+      "type": "object"
+    },
+    "Criterion": {
+      "additionalProperties": false,
+      "properties": {
+        "max_count": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Count"
+        },
+        "metric": {
+          "title": "Metric",
+          "type": "string"
+        },
+        "min_lower": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "lower Wilson bound",
+          "title": "Min Lower"
+        },
+        "min_point": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Min Point"
+        },
+        "subset": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "e.g. {held_out: 'true'}",
+          "title": "Subset",
+          "type": "object"
+        }
+      },
+      "required": [
+        "metric"
+      ],
+      "title": "Criterion",
+      "type": "object"
+    },
+    "CriterionResult": {
+      "additionalProperties": false,
+      "properties": {
+        "criterion": {
+          "$ref": "#/$defs/Criterion"
+        },
+        "observed": {
+          "description": "the value the criterion was judged on",
+          "title": "Observed",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "pass",
+            "fail",
+            "not_evaluable"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "criterion",
+        "status",
+        "observed"
+      ],
+      "title": "CriterionResult",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Persisted as `diff.json`.",
+  "properties": {
+    "acceptance": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Acceptance"
+    },
+    "baseline": {
+      "title": "Baseline",
+      "type": "string"
+    },
+    "calling": {
+      "items": {
+        "$ref": "#/$defs/CallingDelta"
+      },
+      "title": "Calling",
+      "type": "array"
+    },
+    "candidate": {
+      "title": "Candidate",
+      "type": "string"
+    },
+    "changes": {
+      "items": {
+        "$ref": "#/$defs/Change"
+      },
+      "title": "Changes",
+      "type": "array"
+    },
+    "concordance": {
+      "description": "PASS calls of both raw VCFs; empty when both use the same secondary outputs",
+      "items": {
+        "$ref": "#/$defs/Concordance"
+      },
+      "title": "Concordance",
+      "type": "array"
+    },
+    "criteria": {
+      "items": {
+        "$ref": "#/$defs/CriterionResult"
+      },
+      "title": "Criteria",
+      "type": "array"
+    },
+    "noise": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Noise"
+    },
+    "runs": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Runs",
+      "type": "array"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "verdict": {
+      "enum": [
+        "no_regression",
+        "regression"
+      ],
+      "title": "Verdict",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "baseline",
+    "candidate",
+    "noise",
+    "runs",
+    "changes",
+    "calling",
+    "concordance",
+    "verdict"
+  ],
+  "title": "DiffReport",
+  "type": "object"
+}

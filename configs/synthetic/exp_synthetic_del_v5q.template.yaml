@@ -1,0 +1,49 @@
+# Template of the deletion supplement to the synthetic novel variant experiment: everything
+# but the selection, which scripts/generate_synthetic.py verify appends. Paths are relative to
+# configs/suites/.
+schema_version: 1
+suite:
+  name: exp-synthetic-del-v5q
+  version: '0.1'
+  seed: 20261030
+reference:
+  build: GRCh38
+  fasta: ../../data/reference/GRCh38_GIABv3_masked.fa
+sources:
+  strata:
+    segdup: ../../data/strata/v3.6/GRCh38_segdups.bed.gz
+    low_mappability: ../../data/strata/v3.6/GRCh38_lowmappabilityall.bed.gz
+    homopolymer: ../../data/strata/v3.6/GRCh38_AllHomopolymers_ge7bp_imperfectge11bp_slop5.bed.gz
+    tandem_repeat: ../../data/strata/v3.6/GRCh38_AllTandemRepeats_le50bp_slop5.bed.gz
+    all_difficult: ../../data/strata/v3.6/GRCh38_alldifficultregions.bed.gz
+    bg_v5.0q: ../../data/giab/HG002_GRCh38_v5.0q_smvar.benchmark.bed
+constraints:
+  min_distance_bp: 500
+  allowed_variant_types:
+  - snv
+  - insertion
+  - deletion
+  - delins
+  max_indel_length: 20
+background:
+  name: GIAB_HG002
+  vcf: ../../data/giab/HG002_GRCh38_v5.0q_smvar.vcf.gz
+  bed: ../../data/giab/HG002_GRCh38_v5.0q_smvar.benchmark.bed
+  release: v5.0q
+  sex: male
+  restrict_to_bed: true
+  require_pass: true
+  max_length: 20
+  spanning_deletion: ref
+samples:
+- sample_id: positive4
+  role: positive
+  sex: male
+simulation:
+  profile: ../profiles/illumina_2x150_30x_t8.yaml
+  mode: genome
+  genome_contigs: null
+  mason_batch_bp: 500000000
+output:
+  directory: ../../runs/exp_synthetic_del_v5q
+selection: []

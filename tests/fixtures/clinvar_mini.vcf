@@ -1,0 +1,48 @@
+##fileformat=VCFv4.1
+##fileDate=2026-09-01
+##source=ClinVar-like synthetic fixture (tests/fixtures/make_fixtures.py)
+##reference=GRCh38
+##contig=<ID=1>
+##contig=<ID=2>
+##contig=<ID=X>
+##contig=<ID=MT>
+##INFO=<ID=CLNSIG,Number=.,Type=String,Description="Clinical significance">
+##INFO=<ID=CLNREVSTAT,Number=.,Type=String,Description="Review status">
+##INFO=<ID=CLNVC,Number=1,Type=String,Description="Variant type">
+##INFO=<ID=GENEINFO,Number=1,Type=String,Description="Gene(s)">
+##INFO=<ID=CLNDISDB,Number=.,Type=String,Description="Disease database ids">
+##INFO=<ID=CLNDN,Number=.,Type=String,Description="Disease names">
+##INFO=<ID=RS,Number=.,Type=String,Description="dbSNP ID">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+1	200	100001	T	G	.	.	CLNSIG=Pathogenic;CLNREVSTAT=practice_guideline;CLNVC=single_nucleotide_variant;GENEINFO=GENEA:9001;CLNDISDB=MONDO:MONDO:0000101,OMIM:600101;CLNDN=Fixture_disease_A;RS=1001
+1	450	100002	A	C	.	.	CLNSIG=Pathogenic;CLNREVSTAT=reviewed_by_expert_panel;CLNVC=single_nucleotide_variant;GENEINFO=GENEA:9001;CLNDISDB=MONDO:MONDO:0000101,OMIM:600101;CLNDN=Fixture_disease_A
+1	1200	100003	CCCA	C	.	.	CLNSIG=Likely_pathogenic;CLNREVSTAT=criteria_provided,_multiple_submitters,_no_conflicts;CLNVC=Deletion;GENEINFO=GENEA:9001;CLNDISDB=MedGen:CN169374;CLNDN=not_specified
+1	1201	100004	C	A	.	.	CLNSIG=Pathogenic/Likely_pathogenic;CLNREVSTAT=criteria_provided,_multiple_submitters,_no_conflicts;CLNVC=single_nucleotide_variant;GENEINFO=GENEA:9001;CLNDISDB=MedGen:CN169374;CLNDN=not_specified
+1	1500	100010	T	G	.	.	CLNSIG=Uncertain_significance;CLNREVSTAT=criteria_provided,_multiple_submitters,_no_conflicts;CLNVC=single_nucleotide_variant;GENEINFO=GENEA:9001;CLNDISDB=MedGen:CN169374;CLNDN=not_specified
+1	1800	100007	A	T	.	.	CLNSIG=Benign;CLNREVSTAT=criteria_provided,_multiple_submitters,_no_conflicts;CLNVC=single_nucleotide_variant;GENEINFO=GENEA:9001;CLNDISDB=MedGen:CN169374;CLNDN=not_specified
+1	2000	100005	T	A	.	.	CLNSIG=Pathogenic|Uncertain_significance;CLNREVSTAT=criteria_provided,_multiple_submitters,_no_conflicts;CLNVC=single_nucleotide_variant;GENEINFO=GENEA:9001;CLNDISDB=MedGen:CN169374;CLNDN=not_specified
+1	2300	100009	G	A	.	.	CLNSIG=Conflicting_classifications_of_pathogenicity;CLNREVSTAT=criteria_provided,_conflicting_classifications;CLNVC=single_nucleotide_variant;GENEINFO=GENEA:9001;CLNDISDB=MedGen:CN169374;CLNDN=not_specified
+1	2500	100006	C	A	.	.	CLNSIG=Pathogenic;CLNREVSTAT=criteria_provided,_single_submitter;CLNVC=single_nucleotide_variant;GENEINFO=GENEA:9001;CLNDISDB=MedGen:CN169374;CLNDN=not_specified
+1	2800	100008	G	C	.	.	CLNSIG=Likely_benign;CLNREVSTAT=reviewed_by_expert_panel;CLNVC=single_nucleotide_variant;GENEINFO=GENEA:9001;CLNDISDB=MedGen:CN169374;CLNDN=not_specified
+1	3400	100011	G	A	.	.	CLNSIG=Pathogenic;CLNREVSTAT=criteria_provided,_multiple_submitters,_no_conflicts;CLNVC=single_nucleotide_variant;GENEINFO=GENEB:9002|GENEZ:9099;CLNDISDB=MedGen:CN169374;CLNDN=not_specified
+1	3600	100015	T	TCGG	.	.	CLNSIG=Pathogenic;CLNREVSTAT=no_assertion_criteria_provided;CLNVC=Duplication;GENEINFO=GENEB:9002;CLNDISDB=MedGen:CN169374;CLNDN=not_specified
+1	4000	100012	G	GCGTA	.	.	CLNSIG=Likely_pathogenic;CLNREVSTAT=criteria_provided,_multiple_submitters,_no_conflicts;CLNVC=Insertion;GENEINFO=GENEB:9002;CLNDISDB=MedGen:CN169374;CLNDN=not_specified
+1	4700	100013	A	T	.	.	CLNSIG=Benign;CLNREVSTAT=criteria_provided,_multiple_submitters,_no_conflicts;CLNVC=single_nucleotide_variant;GENEINFO=GENEB:9002;CLNDISDB=MedGen:CN169374;CLNDN=not_specified
+1	5000	100016	CA	TG	.	.	CLNSIG=Likely_pathogenic;CLNREVSTAT=criteria_provided,_multiple_submitters,_no_conflicts;CLNVC=Indel;GENEINFO=GENEB:9002;CLNDISDB=MedGen:CN169374;CLNDN=not_specified
+1	5500	100014	ATG	A	.	.	CLNSIG=Benign/Likely_benign;CLNREVSTAT=criteria_provided,_multiple_submitters,_no_conflicts;CLNVC=Deletion;GENEINFO=GENEB:9002;CLNDISDB=MedGen:CN169374;CLNDN=not_specified
+1	9950	100017	G	.	.	.	CLNSIG=Pathogenic;CLNREVSTAT=criteria_provided,_multiple_submitters,_no_conflicts;CLNVC=single_nucleotide_variant;GENEINFO=GENEB:9002;CLNDISDB=MedGen:CN169374;CLNDN=not_specified
+2	200	100021	GTA	G	.	.	CLNSIG=Pathogenic;CLNREVSTAT=criteria_provided,_single_submitter;CLNVC=Deletion;GENEINFO=GENEC:9003;CLNDISDB=MedGen:CN169374;CLNDN=not_specified
+2	800	100022	C	CATCA	.	.	CLNSIG=Likely_pathogenic;CLNREVSTAT=criteria_provided,_single_submitter;CLNVC=Duplication;GENEINFO=GENEC:9003;CLNDISDB=MedGen:CN169374;CLNDN=not_specified
+2	1400	100023	GAGGGGTT	G	.	.	CLNSIG=Pathogenic;CLNREVSTAT=criteria_provided,_single_submitter;CLNVC=Deletion;GENEINFO=GENEC:9003;CLNDISDB=MedGen:CN169374;CLNDN=not_specified
+2	2000	100024	C	CTTAGCACAT	.	.	CLNSIG=Likely_pathogenic;CLNREVSTAT=criteria_provided,_single_submitter;CLNVC=Insertion;GENEINFO=GENEC:9003;CLNDISDB=MedGen:CN169374;CLNDN=not_specified
+2	2600	100025	ACCGAAATTCATC	A	.	.	CLNSIG=Pathogenic;CLNREVSTAT=criteria_provided,_single_submitter;CLNVC=Deletion;GENEINFO=GENEC:9003;CLNDISDB=MedGen:CN169374;CLNDN=not_specified
+2	3200	100026	C	CACAGCAAGCGAAGCG	.	.	CLNSIG=Likely_pathogenic;CLNREVSTAT=criteria_provided,_single_submitter;CLNVC=Insertion;GENEINFO=GENEC:9003;CLNDISDB=MedGen:CN169374;CLNDN=not_specified
+2	3800	100027	CCACTAGGTCGAACTGAGTTTAAAAG	C	.	.	CLNSIG=Pathogenic;CLNREVSTAT=criteria_provided,_single_submitter;CLNVC=Deletion;GENEINFO=GENEC:9003;CLNDISDB=MedGen:CN169374;CLNDN=not_specified
+2	4300	100028	GACTATAGTTTACCCACACATAAGAGCATTCGTCCGCAATTCAAGTGTGACTAAGCCTACC	G	.	.	CLNSIG=Pathogenic;CLNREVSTAT=criteria_provided,_single_submitter;CLNVC=Deletion;GENEINFO=GENEC:9003;CLNDISDB=MedGen:CN169374;CLNDN=not_specified
+2	4500	100029	GAG	CA	.	.	CLNSIG=Likely_pathogenic;CLNREVSTAT=criteria_provided,_single_submitter;CLNVC=Indel;GENEINFO=GENEC:9003;CLNDISDB=MedGen:CN169374;CLNDN=not_specified
+X	500	100035	G	C	.	.	CLNSIG=Pathogenic;CLNREVSTAT=criteria_provided,_single_submitter;CLNVC=single_nucleotide_variant;GENEINFO=GENEX:9004;CLNDISDB=MedGen:CN169374;CLNDN=not_specified
+X	2000	100031	T	G	.	.	CLNSIG=Pathogenic;CLNREVSTAT=criteria_provided,_multiple_submitters,_no_conflicts;CLNVC=single_nucleotide_variant;GENEINFO=GENEX:9004;CLNDISDB=MONDO:MONDO:0000104,MedGen:C0000104;CLNDN=Fixture_X_linked_disease
+X	3000	100032	GC	G	.	.	CLNSIG=Likely_pathogenic;CLNREVSTAT=criteria_provided,_multiple_submitters,_no_conflicts;CLNVC=Deletion;GENEINFO=GENEX:9004;CLNDISDB=MONDO:MONDO:0000104,MedGen:C0000104;CLNDN=Fixture_X_linked_disease
+X	4000	100033	A	T	.	.	CLNSIG=Benign;CLNREVSTAT=criteria_provided,_multiple_submitters,_no_conflicts;CLNVC=single_nucleotide_variant;GENEINFO=GENEX:9004;CLNDISDB=MedGen:CN169374;CLNDN=not_specified
+X	5000	100034	C	T	.	.	CLNSIG=Likely_benign;CLNREVSTAT=criteria_provided,_multiple_submitters,_no_conflicts;CLNVC=single_nucleotide_variant;GENEINFO=GENEX:9004;CLNDISDB=MedGen:CN169374;CLNDN=not_specified
+MT	100	100018	A	G	.	.	CLNSIG=Pathogenic;CLNREVSTAT=practice_guideline;CLNVC=single_nucleotide_variant;GENEINFO=MT-TEST:9005

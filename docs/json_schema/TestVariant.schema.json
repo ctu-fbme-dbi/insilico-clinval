@@ -1,0 +1,341 @@
+{
+  "$defs": {
+    "Classification": {
+      "enum": [
+        "pathogenic",
+        "likely_pathogenic",
+        "uncertain_significance",
+        "likely_benign",
+        "benign"
+      ],
+      "title": "Classification",
+      "type": "string"
+    },
+    "ClinGenInfo": {
+      "additionalProperties": false,
+      "description": "ClinGen Evidence Repository (eRepo) assertion(s) for one allele.\n\neRepo records of the same allele (e.g. curated for different conditions) are merged when their\nclassifications fall in the same tier; ``erepo_id`` is the smallest Uuid, the others are listed\nin ``other_erepo_ids``.",
+      "properties": {
+        "caid": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ClinGen Allele Registry id",
+          "title": "Caid"
+        },
+        "classification": {
+          "$ref": "#/$defs/Classification",
+          "description": "most severe class of the merged records"
+        },
+        "clinvar_variation_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Clinvar Variation Id"
+        },
+        "conditions": {
+          "items": {
+            "$ref": "#/$defs/Condition"
+          },
+          "title": "Conditions",
+          "type": "array"
+        },
+        "erepo_id": {
+          "title": "Erepo Id",
+          "type": "string"
+        },
+        "erepo_release_first_seen": {
+          "description": "held-out reference release if the allele is in it, else the current release",
+          "title": "Erepo Release First Seen",
+          "type": "string"
+        },
+        "guideline": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Guideline"
+        },
+        "met_criteria": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Met Criteria",
+          "type": "array"
+        },
+        "not_met_criteria": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Not Met Criteria",
+          "type": "array"
+        },
+        "other_erepo_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Other Erepo Ids",
+          "type": "array"
+        },
+        "vcep": {
+          "description": "expert panel(s); several are joined with '; '",
+          "title": "Vcep",
+          "type": "string"
+        }
+      },
+      "required": [
+        "vcep",
+        "erepo_id",
+        "erepo_release_first_seen",
+        "classification",
+        "met_criteria"
+      ],
+      "title": "ClinGenInfo",
+      "type": "object"
+    },
+    "ClinVarInfo": {
+      "additionalProperties": false,
+      "properties": {
+        "clnsig": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Clnsig",
+          "type": "array"
+        },
+        "conditions": {
+          "items": {
+            "$ref": "#/$defs/Condition"
+          },
+          "title": "Conditions",
+          "type": "array"
+        },
+        "review_status": {
+          "title": "Review Status",
+          "type": "string"
+        },
+        "stars": {
+          "maximum": 4,
+          "minimum": 0,
+          "title": "Stars",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "clnsig",
+        "review_status",
+        "stars",
+        "conditions"
+      ],
+      "title": "ClinVarInfo",
+      "type": "object"
+    },
+    "Condition": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Id"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "Condition",
+      "type": "object"
+    },
+    "Source": {
+      "additionalProperties": false,
+      "properties": {
+        "database": {
+          "title": "Database",
+          "type": "string"
+        },
+        "record_id": {
+          "title": "Record Id",
+          "type": "string"
+        },
+        "release": {
+          "title": "Release",
+          "type": "string"
+        },
+        "rsid": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rsid"
+        }
+      },
+      "required": [
+        "database",
+        "release",
+        "record_id"
+      ],
+      "title": "Source",
+      "type": "object"
+    },
+    "VariantCategory": {
+      "enum": [
+        "standard",
+        "curated",
+        "difficult",
+        "synthetic_novel"
+      ],
+      "title": "VariantCategory",
+      "type": "string"
+    },
+    "VariantType": {
+      "enum": [
+        "snv",
+        "mnv",
+        "insertion",
+        "deletion",
+        "delins"
+      ],
+      "title": "VariantType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "alt": {
+      "title": "Alt",
+      "type": "string"
+    },
+    "category": {
+      "$ref": "#/$defs/VariantCategory"
+    },
+    "chrom": {
+      "title": "Chrom",
+      "type": "string"
+    },
+    "clingen": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ClinGenInfo"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "clinvar": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ClinVarInfo"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "gene": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Gene"
+    },
+    "held_out": {
+      "default": false,
+      "description": "absent from the held-out reference release (e.g. eRepo v2.2.0 for BIAS-2015)",
+      "title": "Held Out",
+      "type": "boolean"
+    },
+    "indel_length": {
+      "title": "Indel Length",
+      "type": "integer"
+    },
+    "pos": {
+      "minimum": 1,
+      "title": "Pos",
+      "type": "integer"
+    },
+    "ref": {
+      "title": "Ref",
+      "type": "string"
+    },
+    "rule_id": {
+      "title": "Rule Id",
+      "type": "string"
+    },
+    "selection_reason": {
+      "title": "Selection Reason",
+      "type": "string"
+    },
+    "source": {
+      "$ref": "#/$defs/Source"
+    },
+    "strata": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Strata",
+      "type": "array"
+    },
+    "variant_id": {
+      "title": "Variant Id",
+      "type": "string"
+    },
+    "variant_type": {
+      "$ref": "#/$defs/VariantType"
+    }
+  },
+  "required": [
+    "variant_id",
+    "rule_id",
+    "chrom",
+    "pos",
+    "ref",
+    "alt",
+    "variant_type",
+    "indel_length",
+    "category",
+    "gene",
+    "source",
+    "clinvar",
+    "strata",
+    "selection_reason"
+  ],
+  "title": "TestVariant",
+  "type": "object"
+}

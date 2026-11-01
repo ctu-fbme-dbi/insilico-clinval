@@ -1,0 +1,256 @@
+# ACMG SF v3.2 test set "acmg-sf32-short1-chr17-chr19" (short: chr17, chr19).
+# ClinGen eRepo (VCEP-curated) variants restricted to ACMG SF v3.2 genes (Miller et al., Genet Med
+# 2023;25(8):100866, Table 1) and to SF-compatible diseases (MONDO allowlist below), planted into
+# the GIAB HG002 background; genome-mode Mason simulation at 30x.
+#
+# Samples: "positive" carries the findings that must be reported as secondary findings (P/LP in
+# AD/SD/XL genes, biallelic P/LP in AR genes); "negative" carries findings that must NOT be
+# reported: B/LB, VUS (never returned as SF) and single heterozygous P/LP in AR genes (SF requires
+# two P/LP variants).
+#
+# Only 29 of the 81 SF v3.2 genes have eRepo curations (none for e.g. TTN, LMNA, SCN5A, KCNH2,
+# APOB, PCSK9, CALM1-3, HFE, MUTYH, ATP7B, GLA). The MONDO allowlist excludes RYR1-related
+# myopathy (MONDO:0100150, SF footnote j) and MYH7-related scapuloperoneal dystrophy
+# (MONDO:0008409). HG002 v4.2.1 covers chr1-22 only: chrX/chrY carry planted variants only.
+# Short set: only chr17 and chr19 are simulated; the truth VCF still holds chr1-22 background.
+#
+#   clinval build-truth --suite configs/suites/acmg_sf32_short1.yaml
+#   clinval simulate    --suite configs/suites/acmg_sf32_short1.yaml --runtime configs/runtime/docker-local-build.yaml
+schema_version: 1
+suite: { name: acmg-sf32-short1-chr17-chr19, version: "0.1", seed: 20261015 }
+
+reference:
+  build: GRCh38
+  fasta: ../../data/reference/GRCh38_no_alt_analysis_set.fa
+
+sources:
+  clingen_erepo:
+    file: ../../data/clingen/erepo_2026-10-15.tsv
+    release: "2026-10-15"
+
+constraints:
+  min_distance_bp: 500
+  allowed_variant_types: [snv, insertion, deletion, delins]
+  max_indel_length: 20
+
+selection:
+  # P/LP in AD/SD genes: reportable as SF
+  - id: plp_ad
+    category: curated
+    source: clingen_erepo
+    classification_allow: [pathogenic, likely_pathogenic]
+    genes: [BRCA1, LDLR, RYR1, TNNI3, TP53]
+    conditions:
+      - MONDO:0021056   # familial adenomatous polyposis 1 (APC)
+      - MONDO:0021057   # classic or attenuated FAP (APC)
+      - MONDO:0021055   # classic FAP (APC)
+      - MONDO:0700268   # BRCA1-related cancer predisposition
+      - MONDO:0700269   # BRCA2-related cancer predisposition
+      - MONDO:0700272   # PALB2-related cancer predisposition
+      - MONDO:0018875   # Li-Fraumeni syndrome (TP53)
+      - MONDO:0007903   # Li-Fraumeni syndrome 1 (TP53)
+      - MONDO:0007356   # Lynch syndrome 1
+      - MONDO:0005835   # Lynch syndrome
+      - MONDO:0012249   # HNPCC type 2
+      - MONDO:0013699   # HNPCC type 4 (PMS2)
+      - MONDO:0017623   # PTEN hamartoma tumor syndrome
+      - MONDO:0008667   # von Hippel-Lindau disease
+      - MONDO:0007947   # Marfan syndrome (FBN1, SF aortopathies)
+      - MONDO:0005045   # hypertrophic cardiomyopathy
+      - MONDO:0005021   # dilated cardiomyopathy
+      - MONDO:0004994   # cardiomyopathy
+      - MONDO:0007750   # familial hypercholesterolemia (LDLR)
+      - MONDO:0100316   # long QT syndrome 1 (KCNQ1)
+      - MONDO:0010703   # OTC deficiency
+      - MONDO:0009290   # Pompe disease (GAA)
+      - MONDO:0010880   # HHT type 2 (ACVRL1)
+      - MONDO:0008535   # HHT type 1 (ENG)
+      - MONDO:0007783   # malignant hyperthermia susceptibility 1 (RYR1)
+      - MONDO:0018493   # malignant hyperthermia of anesthesia (RYR1)
+      - MONDO:0015967   # monogenic diabetes (HNF1A, SF MODY)
+      - MONDO:0100368   # RPE65-related recessive retinopathy
+    region_bed: ../regions/sf_short1_chr17_chr19.bed
+    count: 15
+    required: true
+    expected: { classification: [pathogenic, likely_pathogenic], reportable: true, level: both }
+    samples: [positive]
+  # AR genes: biallelic P/LP (two variants) is reportable as SF
+  - id: plp_ar_biallelic
+    category: curated
+    source: clingen_erepo
+    classification_allow: [pathogenic, likely_pathogenic]
+    genes: [GAA]
+    conditions:
+      - MONDO:0021056   # familial adenomatous polyposis 1 (APC)
+      - MONDO:0021057   # classic or attenuated FAP (APC)
+      - MONDO:0021055   # classic FAP (APC)
+      - MONDO:0700268   # BRCA1-related cancer predisposition
+      - MONDO:0700269   # BRCA2-related cancer predisposition
+      - MONDO:0700272   # PALB2-related cancer predisposition
+      - MONDO:0018875   # Li-Fraumeni syndrome (TP53)
+      - MONDO:0007903   # Li-Fraumeni syndrome 1 (TP53)
+      - MONDO:0007356   # Lynch syndrome 1
+      - MONDO:0005835   # Lynch syndrome
+      - MONDO:0012249   # HNPCC type 2
+      - MONDO:0013699   # HNPCC type 4 (PMS2)
+      - MONDO:0017623   # PTEN hamartoma tumor syndrome
+      - MONDO:0008667   # von Hippel-Lindau disease
+      - MONDO:0007947   # Marfan syndrome (FBN1, SF aortopathies)
+      - MONDO:0005045   # hypertrophic cardiomyopathy
+      - MONDO:0005021   # dilated cardiomyopathy
+      - MONDO:0004994   # cardiomyopathy
+      - MONDO:0007750   # familial hypercholesterolemia (LDLR)
+      - MONDO:0100316   # long QT syndrome 1 (KCNQ1)
+      - MONDO:0010703   # OTC deficiency
+      - MONDO:0009290   # Pompe disease (GAA)
+      - MONDO:0010880   # HHT type 2 (ACVRL1)
+      - MONDO:0008535   # HHT type 1 (ENG)
+      - MONDO:0007783   # malignant hyperthermia susceptibility 1 (RYR1)
+      - MONDO:0018493   # malignant hyperthermia of anesthesia (RYR1)
+      - MONDO:0015967   # monogenic diabetes (HNF1A, SF MODY)
+      - MONDO:0100368   # RPE65-related recessive retinopathy
+    region_bed: ../regions/sf_short1_chr17_chr19.bed
+    per_gene: 2
+    compound_het: { phase: trans }
+    required: true
+    expected: { classification: [pathogenic, likely_pathogenic], reportable: true, level: both }
+    samples: [positive]
+  # AR genes: a single heterozygous P/LP (carrier) is NOT reportable as SF
+  - id: plp_ar_carrier
+    category: curated
+    source: clingen_erepo
+    classification_allow: [pathogenic, likely_pathogenic]
+    genes: [GAA]
+    conditions:
+      - MONDO:0021056   # familial adenomatous polyposis 1 (APC)
+      - MONDO:0021057   # classic or attenuated FAP (APC)
+      - MONDO:0021055   # classic FAP (APC)
+      - MONDO:0700268   # BRCA1-related cancer predisposition
+      - MONDO:0700269   # BRCA2-related cancer predisposition
+      - MONDO:0700272   # PALB2-related cancer predisposition
+      - MONDO:0018875   # Li-Fraumeni syndrome (TP53)
+      - MONDO:0007903   # Li-Fraumeni syndrome 1 (TP53)
+      - MONDO:0007356   # Lynch syndrome 1
+      - MONDO:0005835   # Lynch syndrome
+      - MONDO:0012249   # HNPCC type 2
+      - MONDO:0013699   # HNPCC type 4 (PMS2)
+      - MONDO:0017623   # PTEN hamartoma tumor syndrome
+      - MONDO:0008667   # von Hippel-Lindau disease
+      - MONDO:0007947   # Marfan syndrome (FBN1, SF aortopathies)
+      - MONDO:0005045   # hypertrophic cardiomyopathy
+      - MONDO:0005021   # dilated cardiomyopathy
+      - MONDO:0004994   # cardiomyopathy
+      - MONDO:0007750   # familial hypercholesterolemia (LDLR)
+      - MONDO:0100316   # long QT syndrome 1 (KCNQ1)
+      - MONDO:0010703   # OTC deficiency
+      - MONDO:0009290   # Pompe disease (GAA)
+      - MONDO:0010880   # HHT type 2 (ACVRL1)
+      - MONDO:0008535   # HHT type 1 (ENG)
+      - MONDO:0007783   # malignant hyperthermia susceptibility 1 (RYR1)
+      - MONDO:0018493   # malignant hyperthermia of anesthesia (RYR1)
+      - MONDO:0015967   # monogenic diabetes (HNF1A, SF MODY)
+      - MONDO:0100368   # RPE65-related recessive retinopathy
+    region_bed: ../regions/sf_short1_chr17_chr19.bed
+    per_gene: 1
+    required: true
+    expected: { classification: [pathogenic, likely_pathogenic], reportable: false, level: both }
+    samples: [negative]
+  # negative controls: B/LB in the same genes
+  - id: blb
+    category: curated
+    source: clingen_erepo
+    classification_allow: [benign, likely_benign]
+    genes: [BRCA1, GAA, LDLR, RYR1, TNNI3, TP53]
+    conditions:
+      - MONDO:0021056   # familial adenomatous polyposis 1 (APC)
+      - MONDO:0021057   # classic or attenuated FAP (APC)
+      - MONDO:0021055   # classic FAP (APC)
+      - MONDO:0700268   # BRCA1-related cancer predisposition
+      - MONDO:0700269   # BRCA2-related cancer predisposition
+      - MONDO:0700272   # PALB2-related cancer predisposition
+      - MONDO:0018875   # Li-Fraumeni syndrome (TP53)
+      - MONDO:0007903   # Li-Fraumeni syndrome 1 (TP53)
+      - MONDO:0007356   # Lynch syndrome 1
+      - MONDO:0005835   # Lynch syndrome
+      - MONDO:0012249   # HNPCC type 2
+      - MONDO:0013699   # HNPCC type 4 (PMS2)
+      - MONDO:0017623   # PTEN hamartoma tumor syndrome
+      - MONDO:0008667   # von Hippel-Lindau disease
+      - MONDO:0007947   # Marfan syndrome (FBN1, SF aortopathies)
+      - MONDO:0005045   # hypertrophic cardiomyopathy
+      - MONDO:0005021   # dilated cardiomyopathy
+      - MONDO:0004994   # cardiomyopathy
+      - MONDO:0007750   # familial hypercholesterolemia (LDLR)
+      - MONDO:0100316   # long QT syndrome 1 (KCNQ1)
+      - MONDO:0010703   # OTC deficiency
+      - MONDO:0009290   # Pompe disease (GAA)
+      - MONDO:0010880   # HHT type 2 (ACVRL1)
+      - MONDO:0008535   # HHT type 1 (ENG)
+      - MONDO:0007783   # malignant hyperthermia susceptibility 1 (RYR1)
+      - MONDO:0018493   # malignant hyperthermia of anesthesia (RYR1)
+      - MONDO:0015967   # monogenic diabetes (HNF1A, SF MODY)
+      - MONDO:0100368   # RPE65-related recessive retinopathy
+    region_bed: ../regions/sf_short1_chr17_chr19.bed
+    count: 10
+    required: true
+    expected: { classification: [benign, likely_benign], reportable: false, level: both }
+    samples: [negative]
+  # negative controls: VUS are never returned as SF
+  - id: vus
+    category: curated
+    source: clingen_erepo
+    classification_allow: [uncertain_significance]
+    genes: [BRCA1, GAA, LDLR, RYR1, TNNI3, TP53]
+    conditions:
+      - MONDO:0021056   # familial adenomatous polyposis 1 (APC)
+      - MONDO:0021057   # classic or attenuated FAP (APC)
+      - MONDO:0021055   # classic FAP (APC)
+      - MONDO:0700268   # BRCA1-related cancer predisposition
+      - MONDO:0700269   # BRCA2-related cancer predisposition
+      - MONDO:0700272   # PALB2-related cancer predisposition
+      - MONDO:0018875   # Li-Fraumeni syndrome (TP53)
+      - MONDO:0007903   # Li-Fraumeni syndrome 1 (TP53)
+      - MONDO:0007356   # Lynch syndrome 1
+      - MONDO:0005835   # Lynch syndrome
+      - MONDO:0012249   # HNPCC type 2
+      - MONDO:0013699   # HNPCC type 4 (PMS2)
+      - MONDO:0017623   # PTEN hamartoma tumor syndrome
+      - MONDO:0008667   # von Hippel-Lindau disease
+      - MONDO:0007947   # Marfan syndrome (FBN1, SF aortopathies)
+      - MONDO:0005045   # hypertrophic cardiomyopathy
+      - MONDO:0005021   # dilated cardiomyopathy
+      - MONDO:0004994   # cardiomyopathy
+      - MONDO:0007750   # familial hypercholesterolemia (LDLR)
+      - MONDO:0100316   # long QT syndrome 1 (KCNQ1)
+      - MONDO:0010703   # OTC deficiency
+      - MONDO:0009290   # Pompe disease (GAA)
+      - MONDO:0010880   # HHT type 2 (ACVRL1)
+      - MONDO:0008535   # HHT type 1 (ENG)
+      - MONDO:0007783   # malignant hyperthermia susceptibility 1 (RYR1)
+      - MONDO:0018493   # malignant hyperthermia of anesthesia (RYR1)
+      - MONDO:0015967   # monogenic diabetes (HNF1A, SF MODY)
+      - MONDO:0100368   # RPE65-related recessive retinopathy
+    region_bed: ../regions/sf_short1_chr17_chr19.bed
+    count: 5
+    required: true
+    expected: { classification: [uncertain_significance], reportable: false, level: both }
+    samples: [negative]
+
+background:
+  name: GIAB_HG002
+  vcf: ../../data/giab/HG002_GRCh38_1_22_v4.2.1_benchmark.vcf.gz
+  bed: ../../data/giab/HG002_GRCh38_1_22_v4.2.1_benchmark_noinconsistent.bed
+  release: "v4.2.1"
+  sex: male
+
+samples:
+  - { sample_id: positive, role: positive, sex: male }
+  - { sample_id: negative, role: negative, sex: male }
+
+simulation:
+  profile: ../profiles/illumina_2x150_30x_t8.yaml
+  mode: genome
+  genome_contigs: [chr17, chr19]
+
+output:
+  directory: ../../runs/acmg_sf32_short1

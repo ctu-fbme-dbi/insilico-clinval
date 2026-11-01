@@ -1,0 +1,18 @@
+# Runtime: every external tool in its container (containers/README.md). Replace the tags with
+# name@sha256:… digests (docker image inspect --format '{{index .RepoDigests 0}}' IMAGE, after
+# pushing to a registry) before article runs; unpinned tags are recorded as manifest warnings.
+schema_version: 1
+default_runner: docker
+tools:
+  bcftools: { image: "clinval:dev" }
+  samtools: { image: "clinval:dev" }
+  mason_simulator: { image: "clinval-mason:2.4.0" }
+  hap.py: { image: "clinval-happy:0.3.15" }
+  rtg: { image: "clinval-happy:0.3.15" }
+  nirvana: { image: "clinval-nirvana:3.18.1" }
+  vep: { image: "ensemblorg/ensembl-vep:release_115.0" }  # BIAS-2015 VEP mode
+  bias_2015: { image: "clinval-bias2015:v3.0.0" }
+  bias_2015_paths: { image: "clinval-bias2015:v3.0.0" }
+  nextflow: { runner: local }   # Nextflow runs on the host; sarek pulls its own containers
+docker:
+  extra_args: []

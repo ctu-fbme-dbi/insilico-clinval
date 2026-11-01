@@ -1,0 +1,44 @@
+# Template: sarek secondary analysis + a closed (black-box) ACMG classifier.
+# Replace the command and the parser mapping with your tool's interface; the framework records
+# only the declared tool name and version (black boxes have no --version).
+# Placeholders: {input_vcf} {output} {sample} {fasta} {workdir}; write literal braces as {{ }}.
+schema_version: 1
+name: sarek-3.10.0_closed-acmg
+description: "sarek 3.10.0 + closed ACMG classifier (template)"
+
+secondary:
+  adapter: sarek
+  sarek:
+    release: "3.10.0"
+    reference: { genome: GATK.GRCh38 }
+
+tertiary:
+  adapter: command
+  input: filtered
+  pass_only: true
+  report_classifications: [pathogenic, likely_pathogenic]
+  command:
+    command:
+      tool_name: closed-acmg
+      version: "0.0.0"                  # set to the classifier's version
+      runner: local                     # or docker + image: name@sha256:...
+      argv: [closed_acmg_classify, --vcf, "{input_vcf}", --out, "{output}"]
+    output: "{sample}.acmg.tsv"
+    parser:
+      format: tsv                       # tsv | csv | json (records: key of the list)
+      columns:
+        chrom: CHROM
+        pos: POS
+        ref: REF
+        alt: ALT
+        classification: CLASSIFICATION
+        criteria: CRITERIA              # optional
+        gene: GENE                      # optional
+        # reported: REPORTED            # optional; otherwise report_classifications applies
+      classification_map:
+        Pathogenic: pathogenic
+        Likely pathogenic: likely_pathogenic
+        VUS: uncertain_significance
+        Likely benign: likely_benign
+        Benign: benign
+      criteria_separator: ","

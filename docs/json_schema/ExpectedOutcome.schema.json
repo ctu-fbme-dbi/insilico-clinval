@@ -1,0 +1,128 @@
+{
+  "$defs": {
+    "Classification": {
+      "enum": [
+        "pathogenic",
+        "likely_pathogenic",
+        "uncertain_significance",
+        "likely_benign",
+        "benign"
+      ],
+      "title": "Classification",
+      "type": "string"
+    },
+    "Condition": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Id"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "Condition",
+      "type": "object"
+    },
+    "EvaluationLevel": {
+      "enum": [
+        "calling",
+        "interpretation",
+        "both"
+      ],
+      "title": "EvaluationLevel",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "acceptable_classifications": {
+      "items": {
+        "$ref": "#/$defs/Classification"
+      },
+      "title": "Acceptable Classifications",
+      "type": "array"
+    },
+    "condition": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Condition"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "evaluation_level": {
+      "$ref": "#/$defs/EvaluationLevel"
+    },
+    "expected_acmg_criteria": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Expected Acmg Criteria",
+      "type": "array"
+    },
+    "expected_classification": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Classification"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "expected_reportable": {
+      "title": "Expected Reportable",
+      "type": "boolean"
+    },
+    "notes": {
+      "default": "",
+      "title": "Notes",
+      "type": "string"
+    },
+    "primary_criterion": {
+      "default": "reportability",
+      "description": "2-tier reportability is the primary acceptance criterion; 5-tier is secondary",
+      "enum": [
+        "reportability",
+        "classification"
+      ],
+      "title": "Primary Criterion",
+      "type": "string"
+    },
+    "reportable_basis": {
+      "title": "Reportable Basis",
+      "type": "string"
+    },
+    "variant_id": {
+      "title": "Variant Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "variant_id",
+    "expected_classification",
+    "acceptable_classifications",
+    "expected_reportable",
+    "reportable_basis",
+    "condition",
+    "evaluation_level"
+  ],
+  "title": "ExpectedOutcome",
+  "type": "object"
+}

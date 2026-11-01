@@ -1,0 +1,31 @@
+name: ci
+on:
+  push:
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: System tools
+        run: sudo apt-get update && sudo apt-get install -y bcftools samtools tabix
+      - name: Install
+        run: pip install -e ".[dev]"
+      - name: Lint
+        run: ruff check . && ruff format --check .
+      - name: Types
+        run: mypy
+      - name: Unit tests
+        run: pytest -m "not integration" --cov=insilico_clinval
+      - name: Mason image
+        run: docker build -t clinval-mason:2.4.0 containers/mason
+      - name: Integration tests (bcftools, samtools, Mason in docker)
+        env:
+          CLINVAL_TEST_MASON_IMAGE: clinval-mason:2.4.0
+        run: pytest -m integration

@@ -1,0 +1,9 @@
+# Article-depth profile with 8 Mason threads (2 x 150 bp, 30x). Output is deterministic for the
+# same seed and thread count, but differs from the 1-thread profile illumina_2x150_30x.yaml.
+schema_version: 1
+name: illumina-2x150-30x-t8
+technology: illumina
+read_length: 150
+fragment: { model: normal, mean: 400, sd: 60 }
+coverage: 30
+threads: 8

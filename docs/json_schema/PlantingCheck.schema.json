@@ -1,0 +1,194 @@
+{
+  "$defs": {
+    "HaplotypeReads": {
+      "additionalProperties": false,
+      "properties": {
+        "alt": {
+          "title": "Alt",
+          "type": "integer"
+        },
+        "haplotype": {
+          "description": "Mason haplotype (oH tag), 1-based",
+          "title": "Haplotype",
+          "type": "integer"
+        },
+        "other": {
+          "title": "Other",
+          "type": "integer"
+        },
+        "reads": {
+          "title": "Reads",
+          "type": "integer"
+        },
+        "ref": {
+          "title": "Ref",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "haplotype",
+        "reads",
+        "alt",
+        "ref",
+        "other"
+      ],
+      "title": "HaplotypeReads",
+      "type": "object"
+    },
+    "PlantingStatus": {
+      "description": "Planting-completeness status of one planted variant in the simulated reads.",
+      "enum": [
+        "ok",
+        "missing_on_haplotype",
+        "no_reads"
+      ],
+      "title": "PlantingStatus",
+      "type": "string"
+    },
+    "VariantPlanting": {
+      "additionalProperties": false,
+      "properties": {
+        "alt": {
+          "title": "Alt",
+          "type": "string"
+        },
+        "alt_reads": {
+          "title": "Alt Reads",
+          "type": "integer"
+        },
+        "by_haplotype": {
+          "items": {
+            "$ref": "#/$defs/HaplotypeReads"
+          },
+          "title": "By Haplotype",
+          "type": "array"
+        },
+        "carrying_haplotypes": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Carrying Haplotypes",
+          "type": "array"
+        },
+        "chrom": {
+          "title": "Chrom",
+          "type": "string"
+        },
+        "expected_vaf": {
+          "title": "Expected Vaf",
+          "type": "number"
+        },
+        "other_reads": {
+          "title": "Other Reads",
+          "type": "integer"
+        },
+        "pos": {
+          "title": "Pos",
+          "type": "integer"
+        },
+        "ref": {
+          "title": "Ref",
+          "type": "string"
+        },
+        "ref_reads": {
+          "title": "Ref Reads",
+          "type": "integer"
+        },
+        "spanning_reads": {
+          "title": "Spanning Reads",
+          "type": "integer"
+        },
+        "status": {
+          "$ref": "#/$defs/PlantingStatus"
+        },
+        "vaf": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Vaf"
+        },
+        "variant_id": {
+          "title": "Variant Id",
+          "type": "string"
+        },
+        "zygosity": {
+          "$ref": "#/$defs/Zygosity"
+        }
+      },
+      "required": [
+        "variant_id",
+        "chrom",
+        "pos",
+        "ref",
+        "alt",
+        "zygosity",
+        "carrying_haplotypes",
+        "expected_vaf",
+        "spanning_reads",
+        "alt_reads",
+        "ref_reads",
+        "other_reads",
+        "vaf",
+        "by_haplotype",
+        "status"
+      ],
+      "title": "VariantPlanting",
+      "type": "object"
+    },
+    "Zygosity": {
+      "enum": [
+        "het",
+        "hom",
+        "hemi"
+      ],
+      "title": "Zygosity",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Persisted as `<sample_id>.planting_check.json`.",
+  "properties": {
+    "complete": {
+      "title": "Complete",
+      "type": "boolean"
+    },
+    "min_alt_reads": {
+      "title": "Min Alt Reads",
+      "type": "integer"
+    },
+    "sample_id": {
+      "title": "Sample Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "variants": {
+      "items": {
+        "$ref": "#/$defs/VariantPlanting"
+      },
+      "title": "Variants",
+      "type": "array"
+    },
+    "window_pad": {
+      "title": "Window Pad",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version",
+    "sample_id",
+    "min_alt_reads",
+    "window_pad",
+    "complete",
+    "variants"
+  ],
+  "title": "PlantingCheck",
+  "type": "object"
+}

@@ -1,0 +1,110 @@
+# Example suite — illustrative; paths point to data downloaded by scripts, never committed.
+# The schema is defined in docs/schemas.md (SuiteConfig) and validated by `clinval validate-suite`.
+# Relative paths are resolved against the directory of this file.
+schema_version: 1
+suite:
+  name: example-germline-suite
+  version: "0.1"
+  seed: 20260928
+
+reference:
+  build: GRCh38
+  fasta: ../../data/reference/GRCh38_no_alt_analysis_set.fa
+  sha256: null            # filled by download script
+  # par_regions: null     # default: GRCh38 PAR1/PAR2 (insilico_clinval/constants.py)
+
+sources:
+  clingen_erepo:
+    file: ../../data/clingen/erepo_tabbed.txt          # eRepo tab-delimited download
+    release: "2026-09"                                  # record the download date / release
+    held_out_reference:                                 # BIAS-2015 was tuned on eRepo v2.2.0
+      release: "v2.2.0"
+      file: ../../data/clingen/erepo_v2.2.0.txt
+  clinvar:
+    vcf: ../../data/clinvar/clinvar_20260901.vcf.gz
+    release: "2026-09-01"
+  strata:
+    cmrg: ../../data/strata/HG002_GRCh38_CMRG_smallvar_v1.00.bed
+    segdup: ../../data/strata/GRCh38_segdups.bed.gz
+    homopolymer: ../../data/strata/GRCh38_SimpleRepeat_homopolymer_gt11_slop5.bed.gz
+
+constraints:
+  min_distance_bp: 500
+  allowed_variant_types: [snv, insertion, deletion, delins]
+  max_indel_length: 20
+  indel_ladder: [[1, 5], [6, 10], [11, 20]]
+
+selection:
+  - id: erepo_plp_panel
+    category: curated
+    source: clingen_erepo
+    classification_allow: [pathogenic, likely_pathogenic]
+    genes: [BRCA1, BRCA2, MLH1, MSH2, LDLR, MYBPC3]   # illustrative gene list
+    per_gene: 2
+    required: true
+    expected: { classification: [pathogenic, likely_pathogenic], reportable: true, level: both }
+    samples: [positive]
+
+  - id: erepo_blb_panel            # negative controls on the same genes
+    category: curated
+    source: clingen_erepo
+    classification_allow: [benign, likely_benign]
+    genes: [BRCA1, BRCA2, MLH1, MSH2, LDLR, MYBPC3]
+    per_gene: 2
+    required: true
+    expected: { classification: [benign, likely_benign], reportable: false, level: both }
+    samples: [negative]
+
+  - id: difficult_clinvar          # P/LP in difficult regions (paralogues, homopolymers)
+    category: difficult
+    source: clinvar
+    clnsig_allow: [pathogenic, likely_pathogenic, pathogenic/likely_pathogenic]
+    min_stars: 2
+    strata: [cmrg, segdup, homopolymer]
+    count: 20
+    expected: { classification: [pathogenic, likely_pathogenic], reportable: true, level: both }
+    samples: [positive]
+
+  - id: indel_ladder
+    category: difficult
+    source: clinvar
+    clnsig_allow: [pathogenic, likely_pathogenic]
+    min_stars: 1
+    ladder_per_bin: 3
+    expected: { classification: [pathogenic, likely_pathogenic], reportable: true, level: both }
+    samples: [positive]
+
+  - id: synthetic_lof
+    category: synthetic_novel
+    source: explicit
+    variants: []   # e.g. {chrom: chr17, pos: ..., ref: ..., alt: ..., gene: BRCA1, rationale: "novel nonsense, PVS1+PM2"}
+    expected: { classification: [pathogenic, likely_pathogenic], reportable: true, level: interpretation }
+    samples: [positive]
+
+# HG002 background: realistic variant density; it is also the calling truth of these samples,
+# so GIAB `standard` rules from the same VCF are not allowed for them. v4.2.1 covers chr1-22 only.
+background:
+  name: GIAB_HG002
+  vcf: ../../data/giab/HG002_GRCh38_1_22_v4.2.1_benchmark.vcf.gz
+  bed: ../../data/giab/HG002_GRCh38_1_22_v4.2.1_benchmark_noinconsistent.bed
+  release: "v4.2.1"
+  sex: male
+
+samples:
+  - sample_id: positive
+    role: positive
+    sex: male          # HG002 background
+    default_zygosity: het
+  - sample_id: negative
+    role: negative
+    sex: male
+    default_zygosity: het
+
+simulation:
+  profile: ../profiles/illumina_2x150_30x.yaml
+  mode: region                    # or genome (whole chromosomes; ~30x WGS cost)
+  flank_bp: 1500
+  # extra_regions_bed: ../../data/regions/paralogues.bed   # e.g. PMS2CL for PMS2 variants
+
+output:
+  directory: ../../runs/example

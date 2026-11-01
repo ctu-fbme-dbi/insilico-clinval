@@ -1,0 +1,15 @@
+# Opt-in integration test (CLINVAL_TEST_SAREK=1): nf-core/sarek 3.10.0 on the synthetic fixture
+# genome. Custom FASTA (indices built by sarek), no known sites, hence no base recalibration.
+schema_version: 1
+name: sarek-3.10.0_fixture
+secondary:
+  adapter: sarek
+  sarek:
+    release: "3.10.0"
+    profile: docker
+    tools: [haplotypecaller]
+    skip_tools: [baserecalibrator]
+    reference: { fasta: ref.fa, fasta_fai: ref.fa.fai }
+    resource_limits: { cpus: 4, memory: "6.GB", time: "4.h" }
+tertiary:
+  adapter: none

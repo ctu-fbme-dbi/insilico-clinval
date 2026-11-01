@@ -1,0 +1,450 @@
+{
+  "$defs": {
+    "FragmentModel": {
+      "additionalProperties": false,
+      "properties": {
+        "max": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "maximum size (uniform model)",
+          "title": "Max"
+        },
+        "mean": {
+          "description": "mean fragment (insert) size, bp",
+          "minimum": 1,
+          "title": "Mean",
+          "type": "integer"
+        },
+        "min": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "minimum size (uniform model)",
+          "title": "Min"
+        },
+        "model": {
+          "default": "normal",
+          "enum": [
+            "normal",
+            "uniform"
+          ],
+          "title": "Model",
+          "type": "string"
+        },
+        "sd": {
+          "description": "standard deviation (normal model)",
+          "minimum": 0,
+          "title": "Sd",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "mean",
+        "sd"
+      ],
+      "title": "FragmentModel",
+      "type": "object"
+    },
+    "IlluminaErrors": {
+      "additionalProperties": false,
+      "description": "Optional Mason Illumina error-model parameters; null = Mason's default.",
+      "properties": {
+        "prob_deletion": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prob Deletion"
+        },
+        "prob_insert": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prob Insert"
+        },
+        "prob_mismatch": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prob Mismatch"
+        },
+        "prob_mismatch_begin": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prob Mismatch Begin"
+        },
+        "prob_mismatch_end": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prob Mismatch End"
+        },
+        "prob_mismatch_scale": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prob Mismatch Scale"
+        }
+      },
+      "title": "IlluminaErrors",
+      "type": "object"
+    },
+    "MasonRun": {
+      "additionalProperties": false,
+      "description": "One mason_simulator invocation (one ploidy group, or one batch of it, of one sample).",
+      "properties": {
+        "args": {
+          "description": "mason_simulator arguments (paths relative to its cwd)",
+          "items": {
+            "type": "string"
+          },
+          "title": "Args",
+          "type": "array"
+        },
+        "fragments": {
+          "title": "Fragments",
+          "type": "integer"
+        },
+        "group": {
+          "enum": [
+            "diploid",
+            "haploid"
+          ],
+          "title": "Group",
+          "type": "string"
+        },
+        "length": {
+          "description": "total segment length, bp",
+          "title": "Length",
+          "type": "integer"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "batch name (`diploid-1`, ...) with simulation.mason_batch_bp; null otherwise",
+          "title": "Name"
+        },
+        "ploidy": {
+          "enum": [
+            1,
+            2
+          ],
+          "title": "Ploidy",
+          "type": "integer"
+        },
+        "seed": {
+          "title": "Seed",
+          "type": "integer"
+        },
+        "segment_names": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "segments of the batch; null without simulation.mason_batch_bp",
+          "title": "Segment Names"
+        },
+        "segments": {
+          "title": "Segments",
+          "type": "integer"
+        },
+        "vcf": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Mason input VCF, relative to the run directory",
+          "title": "Vcf"
+        },
+        "vcf_records": {
+          "title": "Vcf Records",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "group",
+        "ploidy",
+        "segments",
+        "length",
+        "fragments",
+        "seed",
+        "vcf",
+        "vcf_records",
+        "args"
+      ],
+      "title": "MasonRun",
+      "type": "object"
+    },
+    "SimulationMode": {
+      "enum": [
+        "region",
+        "genome"
+      ],
+      "title": "SimulationMode",
+      "type": "string"
+    },
+    "SimulationProfile": {
+      "additionalProperties": false,
+      "description": "Read-simulation parameters (configs/profiles/*.yaml).",
+      "properties": {
+        "chunk_size": {
+          "default": 65536,
+          "minimum": 65536,
+          "title": "Chunk Size",
+          "type": "integer"
+        },
+        "coverage": {
+          "description": "mean depth of a diploid locus (both haplotypes)",
+          "exclusiveMinimum": 0,
+          "title": "Coverage",
+          "type": "number"
+        },
+        "fragment": {
+          "$ref": "#/$defs/FragmentModel"
+        },
+        "illumina": {
+          "$ref": "#/$defs/IlluminaErrors"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "read_length": {
+          "minimum": 20,
+          "title": "Read Length",
+          "type": "integer"
+        },
+        "schema_version": {
+          "const": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        },
+        "technology": {
+          "const": "illumina",
+          "title": "Technology",
+          "type": "string"
+        },
+        "threads": {
+          "default": 1,
+          "description": "Mason threads; part of the determinism key (one RNG each)",
+          "minimum": 1,
+          "title": "Threads",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "schema_version",
+        "name",
+        "technology",
+        "read_length",
+        "fragment",
+        "coverage"
+      ],
+      "title": "SimulationProfile",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Persisted as `<sample_id>.simulation.json`.",
+  "properties": {
+    "background_dropped": {
+      "title": "Background Dropped",
+      "type": "integer"
+    },
+    "background_dropped_log": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Background Dropped Log"
+    },
+    "decomposed": {
+      "description": "planted MNV/delins ids split for Mason",
+      "items": {
+        "type": "string"
+      },
+      "title": "Decomposed",
+      "type": "array"
+    },
+    "fastq_r1": {
+      "title": "Fastq R1",
+      "type": "string"
+    },
+    "fastq_r2": {
+      "title": "Fastq R2",
+      "type": "string"
+    },
+    "flank_bp": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Flank Bp"
+    },
+    "mode": {
+      "$ref": "#/$defs/SimulationMode"
+    },
+    "planting_check": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Planting Check"
+    },
+    "planting_complete": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Planting Complete"
+    },
+    "profile": {
+      "$ref": "#/$defs/SimulationProfile"
+    },
+    "profile_sha256": {
+      "title": "Profile Sha256",
+      "type": "string"
+    },
+    "runs": {
+      "items": {
+        "$ref": "#/$defs/MasonRun"
+      },
+      "title": "Runs",
+      "type": "array"
+    },
+    "sample_id": {
+      "title": "Sample Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "segments": {
+      "description": "segments.tsv, relative to the run directory",
+      "title": "Segments",
+      "type": "string"
+    },
+    "true_bam": {
+      "title": "True Bam",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "sample_id",
+    "mode",
+    "profile",
+    "profile_sha256",
+    "flank_bp",
+    "segments",
+    "runs",
+    "decomposed",
+    "background_dropped",
+    "background_dropped_log",
+    "fastq_r1",
+    "fastq_r2",
+    "true_bam"
+  ],
+  "title": "SimulationSpec",
+  "type": "object"
+}

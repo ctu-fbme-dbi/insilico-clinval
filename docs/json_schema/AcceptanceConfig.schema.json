@@ -1,0 +1,96 @@
+{
+  "$defs": {
+    "Criterion": {
+      "additionalProperties": false,
+      "properties": {
+        "max_count": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Count"
+        },
+        "metric": {
+          "title": "Metric",
+          "type": "string"
+        },
+        "min_lower": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "lower Wilson bound",
+          "title": "Min Lower"
+        },
+        "min_point": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Min Point"
+        },
+        "subset": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "e.g. {held_out: 'true'}",
+          "title": "Subset",
+          "type": "object"
+        }
+      },
+      "required": [
+        "metric"
+      ],
+      "title": "Criterion",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "criteria": {
+      "items": {
+        "$ref": "#/$defs/Criterion"
+      },
+      "minItems": 1,
+      "title": "Criteria",
+      "type": "array"
+    },
+    "name": {
+      "pattern": "^[A-Za-z0-9_.-]+$",
+      "title": "Name",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "default": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "name",
+    "criteria"
+  ],
+  "title": "AcceptanceConfig",
+  "type": "object"
+}

@@ -1,0 +1,8 @@
+# Fixture simulation profile (tiny reference, region mode). See docs/schemas.md, SimulationProfile.
+schema_version: 1
+name: fixture-illumina-100
+technology: illumina
+read_length: 100
+fragment: { model: normal, mean: 300, sd: 30 }
+coverage: 60
+threads: 1

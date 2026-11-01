@@ -1,0 +1,44 @@
+# System under test: nf-core/sarek 3.10.0 (bwa-mem2, DeepVariant, BQSR skipped, iGenomes
+# GATK.GRCh38; the configuration of the article's Sarek runs) -> BIAS-2015 v3.0.0 with
+# VEP 115. PP5/BP6 (ClinVar evidence) switched off, to
+# measure how much of the performance comes from database lookup.
+# Data: python scripts/fetch_data.py --only bias2015_hg38,bias2015_hg38_vep,vep_hg38_annotations,
+#   vep_cache_grch38_115,gnomad_v4.1_exomes
+schema_version: 1
+name: sarek-3.10.0-deepvariant_bias2015-v3.0.0-vep_noPP5BP6
+description: "sarek 3.10.0 (DeepVariant) + BIAS-2015 v3.0.0 (VEP 115), PP5/BP6 off"
+
+secondary:
+  adapter: sarek
+  sarek:
+    release: "3.10.0"
+    profile: docker
+    tools: [deepvariant, snpeff, vep, merge]
+    skip_tools: [baserecalibrator]
+    variant_caller: deepvariant
+    reference: { genome: GATK.GRCh38 }
+    params: { aligner: bwa-mem2, trim_fastq: true, save_mapped: true }
+    save_reference: false
+    # resource_limits: { cpus: 8, memory: "16.GB", time: "48.h" }
+
+tertiary:
+  adapter: bias2015
+  input: filtered            # DeepVariant writes no separate filtered VCF: the raw VCF is used
+  pass_only: true            # drops DeepVariant RefCall/LowQual records
+  # regions_bed: ../regions/reportable_genes.bed
+  report_classifications: [pathogenic, likely_pathogenic]
+  bias2015:
+    version: v3.0.0
+    data_dir: ../../data/bias2015/hg38_2026.03.01
+    data_release: "2026.03.01"
+    annotator: vep
+    vep:
+      cache_dir: ../../data/vep/cache
+      cache_version: "115"
+      fasta: ../../data/vep/cache/homo_sapiens/115_GRCh38/Homo_sapiens.GRCh38.dna.toplevel.fa.gz
+      gnomad_exomes: ../../data/vep/hg38/gnomad/gnomad.exomes.v4.1.sites.AF.vcf.bgz
+      clinvar: ../../data/vep/hg38/clinvar_20260201.vcf.gz
+      clinvar_release: "2026-02-01"
+      alphamissense: ../../data/vep/hg38/AlphaMissense_hg38.tsv.gz
+      revel: ../../data/vep/hg38/revel_grch38.tsv.gz
+    skip_codes: [PP5, BP6]

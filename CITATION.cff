@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the article and the archived release."
+title: "insilico-clinval"
+type: software
+authors:
+  - family-names: "Dvorský"
+    given-names: "Bohuslav"
+    affiliation: "Faculty of Biomedical Engineering, Czech Technical University in Prague"
+version: "0.1.0.dev0"
+# doi: 10.5281/zenodo.XXXXXXX   # add after the first Zenodo release
+# license: custom Academic and Research License 1.0 (no SPDX id); add license-url to LICENSE.md after the repository is public

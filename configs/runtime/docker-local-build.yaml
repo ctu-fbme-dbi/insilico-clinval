@@ -1,0 +1,17 @@
+# Runtime: Mason, Nirvana, BIAS-2015 and hap.py in locally built images (containers/), other tools
+# (bcftools, samtools, nextflow) on PATH.
+#   docker build -t clinval-mason:2.4.0 containers/mason
+#   docker build -t clinval-nirvana:3.18.1 containers/nirvana
+#   docker build -t clinval-bias2015:v3.0.0 containers/bias2015
+#   docker build --platform linux/amd64 -t clinval-happy:0.3.15 containers/happy
+# Pin by digest (name@sha256:...) for article runs; a tag is recorded with a manifest warning.
+schema_version: 1
+default_runner: local
+tools:
+  mason_simulator: { runner: docker, image: "clinval-mason:2.4.0" }
+  nirvana: { runner: docker, image: "clinval-nirvana:3.18.1" }
+  vep: { runner: docker, image: "ensemblorg/ensembl-vep:release_115.0" }  # BIAS-2015 VEP mode
+  bias_2015: { runner: docker, image: "clinval-bias2015:v3.0.0" }
+  bias_2015_paths: { runner: docker, image: "clinval-bias2015:v3.0.0" }
+  hap.py: { runner: docker, image: "clinval-happy:0.3.15" }
+  rtg: { runner: docker, image: "clinval-happy:0.3.15" }

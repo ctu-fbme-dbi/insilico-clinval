@@ -1,0 +1,205 @@
+{
+  "$defs": {
+    "FidelityDataset": {
+      "additionalProperties": false,
+      "properties": {
+        "alignment": {
+          "description": "BAM or CRAM of the secondary pipeline",
+          "title": "Alignment",
+          "type": "string"
+        },
+        "id": {
+          "description": "file names and table key",
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "description": "shown in tables and figures",
+          "title": "Label",
+          "type": "string"
+        },
+        "truth_vcf": {
+          "description": "truth of this genome (bgzipped, indexed)",
+          "title": "Truth Vcf",
+          "type": "string"
+        },
+        "vcf": {
+          "description": "VCF of the secondary pipeline (bgzipped, indexed)",
+          "title": "Vcf",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "alignment",
+        "vcf",
+        "truth_vcf"
+      ],
+      "title": "FidelityDataset",
+      "type": "object"
+    },
+    "HappySettings": {
+      "additionalProperties": false,
+      "properties": {
+        "engine": {
+          "default": "vcfeval",
+          "enum": [
+            "vcfeval",
+            "xcmp"
+          ],
+          "title": "Engine",
+          "type": "string"
+        },
+        "gender": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Sex"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "hap.py --gender (HG002: male); null = hap.py guesses"
+        },
+        "pass_only": {
+          "default": true,
+          "description": "evaluate PASS calls only",
+          "title": "Pass Only",
+          "type": "boolean"
+        },
+        "threads": {
+          "default": 4,
+          "minimum": 1,
+          "title": "Threads",
+          "type": "integer"
+        },
+        "vcfeval_template": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "RTG SDF of the reference; null = hap.py builds one",
+          "title": "Vcfeval Template"
+        }
+      },
+      "title": "HappySettings",
+      "type": "object"
+    },
+    "Sex": {
+      "enum": [
+        "female",
+        "male"
+      ],
+      "title": "Sex",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "baseline": {
+      "description": "dataset id the others are compared with (real data)",
+      "title": "Baseline",
+      "type": "string"
+    },
+    "confident_bed": {
+      "description": "regions evaluated by hap.py (GIAB benchmark BED)",
+      "title": "Confident Bed",
+      "type": "string"
+    },
+    "datasets": {
+      "items": {
+        "$ref": "#/$defs/FidelityDataset"
+      },
+      "minItems": 2,
+      "title": "Datasets",
+      "type": "array"
+    },
+    "happy": {
+      "$ref": "#/$defs/HappySettings"
+    },
+    "name": {
+      "pattern": "^[A-Za-z0-9_.-]+$",
+      "title": "Name",
+      "type": "string"
+    },
+    "planting": {
+      "description": "run directories with *.planting_check.json",
+      "items": {
+        "type": "string"
+      },
+      "title": "Planting",
+      "type": "array"
+    },
+    "qc_regions": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "regions of samtools/bcftools stats; null = confident_bed",
+      "title": "Qc Regions"
+    },
+    "recall_gap": {
+      "anyOf": [
+        {
+          "exclusiveMaximum": 1,
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "flag strata whose |recall gap| exceeds this",
+      "title": "Recall Gap"
+    },
+    "reference": {
+      "description": "FASTA (with .fai) used by the pipeline",
+      "title": "Reference",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "default": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "stratifications": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "stratum name -> BED (plain or .gz)",
+      "title": "Stratifications",
+      "type": "object"
+    },
+    "threads": {
+      "default": 4,
+      "description": "samtools / bcftools threads",
+      "minimum": 1,
+      "title": "Threads",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "name",
+    "reference",
+    "confident_bed",
+    "datasets",
+    "baseline"
+  ],
+  "title": "FidelityConfig",
+  "type": "object"
+}

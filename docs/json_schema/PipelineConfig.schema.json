@@ -1,0 +1,860 @@
+{
+  "$defs": {
+    "Bias2015Config": {
+      "additionalProperties": false,
+      "properties": {
+        "annotator": {
+          "default": "nirvana",
+          "description": "annotator of BIAS's input JSON",
+          "enum": [
+            "nirvana",
+            "vep"
+          ],
+          "title": "Annotator",
+          "type": "string"
+        },
+        "data_dir": {
+          "description": "BIAS hg38 data bundle directory",
+          "title": "Data Dir",
+          "type": "string"
+        },
+        "data_release": {
+          "description": "data bundle release, e.g. 2026.03.01",
+          "title": "Data Release",
+          "type": "string"
+        },
+        "nirvana": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/NirvanaData"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "skip_codes": {
+          "description": "ACMG codes BIAS must not assign, e.g. [PP5, BP6]",
+          "items": {
+            "type": "string"
+          },
+          "title": "Skip Codes",
+          "type": "array"
+        },
+        "vep": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VepData"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "version": {
+          "description": "BIAS-2015 release, e.g. v3.0.0 (must match the image)",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "version",
+        "data_dir",
+        "data_release"
+      ],
+      "title": "Bias2015Config",
+      "type": "object"
+    },
+    "Classification": {
+      "enum": [
+        "pathogenic",
+        "likely_pathogenic",
+        "uncertain_significance",
+        "likely_benign",
+        "benign"
+      ],
+      "title": "Classification",
+      "type": "string"
+    },
+    "CommandSecondary": {
+      "additionalProperties": false,
+      "properties": {
+        "command": {
+          "$ref": "#/$defs/CommandSpec"
+        },
+        "outputs": {
+          "$ref": "#/$defs/SecondaryOutputs"
+        }
+      },
+      "required": [
+        "command",
+        "outputs"
+      ],
+      "title": "CommandSecondary",
+      "type": "object"
+    },
+    "CommandSpec": {
+      "additionalProperties": false,
+      "description": "An external command run as a black box (own runner, optionally its own image).",
+      "properties": {
+        "argv": {
+          "description": "argv template with {placeholders}",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Argv",
+          "type": "array"
+        },
+        "image": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Image"
+        },
+        "runner": {
+          "default": "local",
+          "enum": [
+            "local",
+            "docker"
+          ],
+          "title": "Runner",
+          "type": "string"
+        },
+        "tool_name": {
+          "description": "name in the manifest",
+          "pattern": "^[A-Za-z0-9_.-]+$",
+          "title": "Tool Name",
+          "type": "string"
+        },
+        "version": {
+          "description": "recorded in the manifest (black boxes have no --version)",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool_name",
+        "version",
+        "argv"
+      ],
+      "title": "CommandSpec",
+      "type": "object"
+    },
+    "CommandTertiary": {
+      "additionalProperties": false,
+      "properties": {
+        "command": {
+          "$ref": "#/$defs/CommandSpec"
+        },
+        "output": {
+          "description": "output file template relative to the work directory",
+          "title": "Output",
+          "type": "string"
+        },
+        "parser": {
+          "$ref": "#/$defs/ParserSpec"
+        }
+      },
+      "required": [
+        "command",
+        "output",
+        "parser"
+      ],
+      "title": "CommandTertiary",
+      "type": "object"
+    },
+    "DeepVariantHaploid": {
+      "additionalProperties": false,
+      "description": "Haploid calling of sex chromosomes in XY samples (DeepVariant >= 1.6).",
+      "properties": {
+        "contigs": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Contigs",
+          "type": "array"
+        },
+        "par_bed": {
+          "description": "PAR regions, called as diploid (BED, e.g. GRCh38 PAR1/PAR2)",
+          "title": "Par Bed",
+          "type": "string"
+        }
+      },
+      "required": [
+        "par_bed"
+      ],
+      "title": "DeepVariantHaploid",
+      "type": "object"
+    },
+    "NirvanaData": {
+      "additionalProperties": false,
+      "properties": {
+        "cache": {
+          "description": "Nirvana cache prefix (e.g. …/GRCh38/Cache/Both)",
+          "title": "Cache",
+          "type": "string"
+        },
+        "reference": {
+          "description": "Homo_sapiens.GRCh38.Nirvana.dat",
+          "title": "Reference",
+          "type": "string"
+        },
+        "supplementary": {
+          "description": "SupplementaryAnnotation directory for GRCh38",
+          "title": "Supplementary",
+          "type": "string"
+        }
+      },
+      "required": [
+        "cache",
+        "supplementary",
+        "reference"
+      ],
+      "title": "NirvanaData",
+      "type": "object"
+    },
+    "ParserSpec": {
+      "additionalProperties": false,
+      "description": "How to read a black-box classifier output into CanonicalFindings.",
+      "properties": {
+        "classification_map": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Classification"
+          },
+          "title": "Classification Map",
+          "type": "object"
+        },
+        "columns": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "propertyNames": {
+            "enum": [
+              "chrom",
+              "pos",
+              "ref",
+              "alt",
+              "classification",
+              "criteria",
+              "gene",
+              "hgvs_c",
+              "hgvs_p",
+              "reported"
+            ]
+          },
+          "title": "Columns",
+          "type": "object"
+        },
+        "criteria_separator": {
+          "default": ",",
+          "title": "Criteria Separator",
+          "type": "string"
+        },
+        "format": {
+          "enum": [
+            "tsv",
+            "csv",
+            "json"
+          ],
+          "title": "Format",
+          "type": "string"
+        },
+        "records": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "json: key of the record list",
+          "title": "Records"
+        },
+        "reported_true": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Reported True",
+          "type": "array"
+        }
+      },
+      "required": [
+        "format",
+        "columns",
+        "classification_map"
+      ],
+      "title": "ParserSpec",
+      "type": "object"
+    },
+    "PrecomputedSample": {
+      "additionalProperties": false,
+      "properties": {
+        "alignment": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Alignment"
+        },
+        "filtered_vcf": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Filtered Vcf"
+        },
+        "raw_vcf": {
+          "title": "Raw Vcf",
+          "type": "string"
+        }
+      },
+      "required": [
+        "raw_vcf"
+      ],
+      "title": "PrecomputedSample",
+      "type": "object"
+    },
+    "PrecomputedSecondary": {
+      "additionalProperties": false,
+      "properties": {
+        "samples": {
+          "additionalProperties": {
+            "$ref": "#/$defs/PrecomputedSample"
+          },
+          "title": "Samples",
+          "type": "object"
+        },
+        "tool_name": {
+          "default": "precomputed",
+          "title": "Tool Name",
+          "type": "string"
+        },
+        "version": {
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "version",
+        "samples"
+      ],
+      "title": "PrecomputedSecondary",
+      "type": "object"
+    },
+    "SarekConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "deepvariant_haploid": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DeepVariantHaploid"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "call these contigs as haploid in XY samples (sarek passes no such option)"
+        },
+        "extra_args": {
+          "description": "extra nextflow arguments",
+          "items": {
+            "type": "string"
+          },
+          "title": "Extra Args",
+          "type": "array"
+        },
+        "intervals": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Intervals"
+        },
+        "params": {
+          "additionalProperties": true,
+          "description": "further sarek parameters (passed in the params file)",
+          "title": "Params",
+          "type": "object"
+        },
+        "profile": {
+          "default": "docker",
+          "title": "Profile",
+          "type": "string"
+        },
+        "reference": {
+          "$ref": "#/$defs/SarekReference"
+        },
+        "release": {
+          "description": "nf-core/sarek release tag, e.g. 3.10.0",
+          "title": "Release",
+          "type": "string"
+        },
+        "resource_limits": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Nextflow process.resourceLimits, e.g. {cpus: 8, memory: 16.GB}",
+          "title": "Resource Limits"
+        },
+        "save_reference": {
+          "default": false,
+          "title": "Save Reference",
+          "type": "boolean"
+        },
+        "skip_tools": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Skip Tools",
+          "type": "array"
+        },
+        "tools": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Tools",
+          "type": "array"
+        },
+        "variant_caller": {
+          "default": "haplotypecaller",
+          "description": "caller whose VCF is collected",
+          "enum": [
+            "haplotypecaller",
+            "deepvariant"
+          ],
+          "title": "Variant Caller",
+          "type": "string"
+        },
+        "wes": {
+          "default": false,
+          "title": "Wes",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "release",
+        "reference"
+      ],
+      "title": "SarekConfig",
+      "type": "object"
+    },
+    "SarekReference": {
+      "additionalProperties": false,
+      "description": "Either an iGenomes key or a custom FASTA (then igenomes_ignore is set).",
+      "properties": {
+        "bwa": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "directory with a prebuilt BWA index",
+          "title": "Bwa"
+        },
+        "dbsnp": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dbsnp"
+        },
+        "dbsnp_tbi": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dbsnp Tbi"
+        },
+        "fasta": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fasta"
+        },
+        "fasta_dict": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "sarek parameter `dict`",
+          "title": "Fasta Dict"
+        },
+        "fasta_fai": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fasta Fai"
+        },
+        "genome": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "iGenomes key, e.g. GATK.GRCh38",
+          "title": "Genome"
+        },
+        "known_indels": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Known Indels"
+        },
+        "known_indels_tbi": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Known Indels Tbi"
+        }
+      },
+      "title": "SarekReference",
+      "type": "object"
+    },
+    "SecondaryConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "adapter": {
+          "enum": [
+            "sarek",
+            "command",
+            "precomputed"
+          ],
+          "title": "Adapter",
+          "type": "string"
+        },
+        "command": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CommandSecondary"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "precomputed": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PrecomputedSecondary"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "sarek": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SarekConfig"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "adapter"
+      ],
+      "title": "SecondaryConfig",
+      "type": "object"
+    },
+    "SecondaryOutputs": {
+      "additionalProperties": false,
+      "description": "Output path templates (relative to the adapter's output directory; {sample}).",
+      "properties": {
+        "alignment": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Alignment"
+        },
+        "filtered_vcf": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Filtered Vcf"
+        },
+        "raw_vcf": {
+          "title": "Raw Vcf",
+          "type": "string"
+        }
+      },
+      "required": [
+        "raw_vcf"
+      ],
+      "title": "SecondaryOutputs",
+      "type": "object"
+    },
+    "TertiaryConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "adapter": {
+          "enum": [
+            "bias2015",
+            "command",
+            "none"
+          ],
+          "title": "Adapter",
+          "type": "string"
+        },
+        "bias2015": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Bias2015Config"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "command": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CommandTertiary"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "input": {
+          "default": "filtered",
+          "enum": [
+            "filtered",
+            "raw"
+          ],
+          "title": "Input",
+          "type": "string"
+        },
+        "pass_only": {
+          "default": true,
+          "title": "Pass Only",
+          "type": "boolean"
+        },
+        "regions_bed": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "restrict to reportable regions",
+          "title": "Regions Bed"
+        },
+        "report_classifications": {
+          "items": {
+            "$ref": "#/$defs/Classification"
+          },
+          "title": "Report Classifications",
+          "type": "array"
+        }
+      },
+      "required": [
+        "adapter"
+      ],
+      "title": "TertiaryConfig",
+      "type": "object"
+    },
+    "VepData": {
+      "additionalProperties": false,
+      "description": "Ensembl VEP inputs for BIAS-2015's VEP mode (BIAS doc/vep_setup.md, hg38).",
+      "properties": {
+        "alphamissense": {
+          "description": "AlphaMissense hg38 TSV for the VEP plugin",
+          "title": "Alphamissense",
+          "type": "string"
+        },
+        "cache_dir": {
+          "description": "VEP cache root (contains homo_sapiens/<version>_GRCh38)",
+          "title": "Cache Dir",
+          "type": "string"
+        },
+        "cache_version": {
+          "description": "VEP cache release, e.g. 115 (must match the image)",
+          "title": "Cache Version",
+          "type": "string"
+        },
+        "clinvar": {
+          "description": "ClinVar GRCh38 VCF",
+          "title": "Clinvar",
+          "type": "string"
+        },
+        "clinvar_release": {
+          "description": "ClinVar release of the VCF, e.g. 2026-02-01",
+          "title": "Clinvar Release",
+          "type": "string"
+        },
+        "fasta": {
+          "description": "VEP's GRCh38 FASTA (bgzipped, indexed)",
+          "title": "Fasta",
+          "type": "string"
+        },
+        "fork": {
+          "default": 4,
+          "description": "VEP --fork",
+          "minimum": 1,
+          "title": "Fork",
+          "type": "integer"
+        },
+        "gnomad_exomes": {
+          "description": "gnomAD exomes sites VCF with AF, AF_joint, AC, AN",
+          "title": "Gnomad Exomes",
+          "type": "string"
+        },
+        "revel": {
+          "description": "REVEL GRCh38 TSV for the VEP plugin",
+          "title": "Revel",
+          "type": "string"
+        }
+      },
+      "required": [
+        "cache_dir",
+        "cache_version",
+        "fasta",
+        "gnomad_exomes",
+        "clinvar",
+        "clinvar_release",
+        "alphamissense",
+        "revel"
+      ],
+      "title": "VepData",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "description": {
+      "default": "",
+      "title": "Description",
+      "type": "string"
+    },
+    "name": {
+      "description": "directory name under sut/",
+      "pattern": "^[A-Za-z0-9_.-]+$",
+      "title": "Name",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "secondary": {
+      "$ref": "#/$defs/SecondaryConfig"
+    },
+    "tertiary": {
+      "$ref": "#/$defs/TertiaryConfig"
+    }
+  },
+  "required": [
+    "schema_version",
+    "name",
+    "secondary",
+    "tertiary"
+  ],
+  "title": "PipelineConfig",
+  "type": "object"
+}

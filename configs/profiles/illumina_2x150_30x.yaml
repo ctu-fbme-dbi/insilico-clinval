@@ -1,0 +1,9 @@
+# Article profile: Illumina-like 2 x 150 bp paired-end reads, ~30x WGS-equivalent depth.
+# Mason's built-in Illumina error model is used (all illumina.* parameters left at their defaults).
+schema_version: 1
+name: illumina-2x150-30x
+technology: illumina
+read_length: 150
+fragment: { model: normal, mean: 400, sd: 60 }
+coverage: 30
+threads: 1          # part of the determinism key (Mason uses one RNG per thread)

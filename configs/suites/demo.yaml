@@ -1,0 +1,78 @@
+# Demo suite on real data: ClinGen eRepo P/LP vs B/LB on six genes, GIAB HG002 background,
+# region-mode Mason simulation at 30x. Fetch the inputs first:
+#
+#   python scripts/fetch_data.py --only grch38,giab_hg002_v4.2.1,clingen_erepo --allow-unpinned
+#
+# then set sources.clingen_erepo.file/release to the downloaded export (its name carries the
+# download date) and run:
+#
+#   clinval build-truth --suite configs/suites/demo.yaml
+#   clinval simulate    --suite configs/suites/demo.yaml --runtime configs/runtime/docker-local-build.yaml
+#
+# Genes: CDH1, TP53, MYH7, PTEN, LDLR (autosomal, inside the HG002 v4.2.1 benchmark) and MECP2
+# (chrX: hemizygous in the male HG002 background, outside the chr1-22 benchmark; flagged).
+# No held-out reference is configured (eRepo v2.2.0 is a manual download), so held_out is false
+# for every variant and a warning is recorded.
+schema_version: 1
+suite:
+  name: demo-erepo-hg002
+  version: "0.1"
+  seed: 20261007
+
+reference:
+  build: GRCh38
+  fasta: ../../data/reference/GRCh38_no_alt_analysis_set.fa
+
+sources:
+  clingen_erepo:
+    file: ../../data/clingen/erepo_2026-10-07.tsv
+    release: "2026-10-07"
+
+constraints:
+  min_distance_bp: 500
+  allowed_variant_types: [snv, insertion, deletion, delins]
+  max_indel_length: 20
+
+selection:
+  - id: erepo_plp
+    category: curated
+    source: clingen_erepo
+    classification_allow: [pathogenic, likely_pathogenic]
+    genes: [CDH1, TP53, MYH7, PTEN, LDLR, MECP2]
+    per_gene: 2
+    required: true
+    expected: { classification: [pathogenic, likely_pathogenic], reportable: true, level: both }
+    samples: [positive]
+
+  - id: erepo_blb          # negative controls on the same genes
+    category: curated
+    source: clingen_erepo
+    classification_allow: [benign, likely_benign]
+    genes: [CDH1, TP53, MYH7, PTEN, LDLR, MECP2]
+    per_gene: 2
+    required: true
+    expected: { classification: [benign, likely_benign], reportable: false, level: both }
+    samples: [negative]
+
+background:
+  name: GIAB_HG002
+  vcf: ../../data/giab/HG002_GRCh38_1_22_v4.2.1_benchmark.vcf.gz
+  bed: ../../data/giab/HG002_GRCh38_1_22_v4.2.1_benchmark_noinconsistent.bed
+  release: "v4.2.1"
+  sex: male
+
+samples:
+  - sample_id: positive
+    role: positive
+    sex: male
+  - sample_id: negative
+    role: negative
+    sex: male
+
+simulation:
+  profile: ../profiles/illumina_2x150_30x.yaml
+  mode: region
+  flank_bp: 1500
+
+output:
+  directory: ../../runs/demo

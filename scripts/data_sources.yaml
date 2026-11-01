@@ -1,0 +1,553 @@
+# Reference data fetched by scripts/fetch_data.py (never committed; downloads are explicit, checksummed steps).
+# `path` is relative to the data directory (default: ./data). `sha256: null` marks a file that is
+# not pinned (a moving export such as the ClinGen eRepo); it is fetched only with
+# --allow-unpinned and its hash is recorded in data/fetch_report.json and in every run manifest.
+schema_version: 1
+datasets:
+  grch38:
+    description: >-
+      GRCh38 no-alt analysis set (UCSC-style names, chrY PARs and centromeric arrays masked),
+      the reference recommended for short-read pipelines; NCBI GCA_000001405.15.
+    files:
+      - url: https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/001/405/GCA_000001405.15_GRCh38/seqs_for_alignment_pipelines.ucsc_ids/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz
+        path: reference/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz
+        sha256: fb4243ebb014caf27111f24dd62b7ce42160f28581da6f8fcd6cba5977778d02  # MD5 a08035b6… matches NCBI md5checksums.txt
+    prepare:
+      - action: decompress_fasta
+        source: reference/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz
+        target: reference/GRCh38_no_alt_analysis_set.fa
+
+  giab_hg002_v4.2.1:
+    description: >-
+      GIAB HG002 small-variant benchmark v4.2.1, GRCh38, chr1-22 only (background genome).
+    files:
+      - url: https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/AshkenazimTrio/HG002_NA24385_son/NISTv4.2.1/GRCh38/HG002_GRCh38_1_22_v4.2.1_benchmark.vcf.gz
+        path: giab/HG002_GRCh38_1_22_v4.2.1_benchmark.vcf.gz
+        sha256: adb4d4a50048aa13353a06b84fcfcbca09a5d17525efaa4cea44f8822e81175c  # first download 2026-10-07 (GIAB publishes no checksum for this file)
+      - url: https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/AshkenazimTrio/HG002_NA24385_son/NISTv4.2.1/GRCh38/HG002_GRCh38_1_22_v4.2.1_benchmark.vcf.gz.tbi
+        path: giab/HG002_GRCh38_1_22_v4.2.1_benchmark.vcf.gz.tbi
+        sha256: 23162712553413b10f88916c28bd1238deb703a7237be2910440773beea71894  # first download 2026-10-07
+      - url: https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/AshkenazimTrio/HG002_NA24385_son/NISTv4.2.1/GRCh38/HG002_GRCh38_1_22_v4.2.1_benchmark_noinconsistent.bed
+        path: giab/HG002_GRCh38_1_22_v4.2.1_benchmark_noinconsistent.bed
+        sha256: fba9a57c36ec88e5d14ea3e259c8866c7935f4998d3ec0fa2d6c3962da5b5575  # first download 2026-10-07
+
+  giab_cmrg_v1.00:
+    description: GIAB challenging medically relevant genes (CMRG) v1.00, small variants, GRCh38.
+    files:
+      - url: https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/AshkenazimTrio/HG002_NA24385_son/CMRG_v1.00/GRCh38/SmallVariant/HG002_GRCh38_CMRG_smallvar_v1.00.bed
+        path: strata/HG002_GRCh38_CMRG_smallvar_v1.00.bed
+        sha256: dc77803bb474802fd3213d2f3649076dc14675d3b3c0ae3284036be09d2813f7  # first download 2026-10-07
+
+  giab_strata_v3.3:
+    description: >-
+      GIAB genome stratifications v3.3, GRCh38 (segmental duplications, homopolymers; all difficult
+      regions and their complement, homopolymers >= 7 bp, tandem repeats <= 50 bp and low
+      mappability for the fidelity experiment).
+    files:
+      - url: https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/genome-stratifications/v3.3/GRCh38@all/SegmentalDuplications/GRCh38_segdups.bed.gz
+        path: strata/GRCh38_segdups.bed.gz
+        sha256: 413b505be7985d05746e6ab2a1332a3fda515b49688246ca7ace680c1744a032  # MD5 f3f76060… matches genome-stratifications-md5s.txt
+      - url: https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/genome-stratifications/v3.3/GRCh38@all/LowComplexity/GRCh38_SimpleRepeat_homopolymer_ge12_slop5.bed.gz
+        path: strata/GRCh38_SimpleRepeat_homopolymer_ge12_slop5.bed.gz
+        sha256: eb6ac2f66d4d41e8e30598e5424d4de91d8345b2a912f03796cb6a7efce1c0fa  # MD5 a4f3434a… matches genome-stratifications-md5s.txt
+      - url: https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/genome-stratifications/v3.3/GRCh38@all/Union/GRCh38_alldifficultregions.bed.gz
+        path: strata/GRCh38_alldifficultregions.bed.gz
+        sha256: 65f302d7d484d1b5e413f4ebf20cdb7f68341e6c73581c1ee0e9c5446c0d2451  # MD5 c5ca0476… matches genome-stratifications-md5s.txt
+      - url: https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/genome-stratifications/v3.3/GRCh38@all/Union/GRCh38_notinalldifficultregions.bed.gz
+        path: strata/GRCh38_notinalldifficultregions.bed.gz
+        sha256: 4b720f25555c4ae64dbab1578e53a64407f7e90b2ebee72eaaafce3bd9f92cbb  # MD5 e95d1f9d… matches genome-stratifications-md5s.txt
+      - url: https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/genome-stratifications/v3.3/GRCh38@all/LowComplexity/GRCh38_AllHomopolymers_ge7bp_imperfectge11bp_slop5.bed.gz
+        path: strata/GRCh38_AllHomopolymers_ge7bp_imperfectge11bp_slop5.bed.gz
+        sha256: 7563d6b658abacd880d70c8798c920447076f22658739f74c76307b246e3cd0a  # MD5 cf68f917… matches genome-stratifications-md5s.txt
+      - url: https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/genome-stratifications/v3.3/GRCh38@all/LowComplexity/GRCh38_AllTandemRepeats_le50bp_slop5.bed.gz
+        path: strata/GRCh38_AllTandemRepeats_le50bp_slop5.bed.gz
+        sha256: d4afc211ec45bdf6eaeedd89bb407cace8effdfda5dc8c062afed04e09191845  # MD5 1d3f115c… matches genome-stratifications-md5s.txt
+      - url: https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/genome-stratifications/v3.3/GRCh38@all/Mappability/GRCh38_lowmappabilityall.bed.gz
+        path: strata/GRCh38_lowmappabilityall.bed.gz
+        sha256: 4b487e8500d756335489b41ae31fa594f3967655f29e3d804d3e159c04f294c9  # MD5 7303fbe5… matches genome-stratifications-md5s.txt
+
+  giab_hg002_v5.0q:
+    description: >-
+      GIAB HG002 assembly-based small-variant benchmark v5.0q, GRCh38 (from the T2T-HG002 Q100
+      v1.1 assembly; chr1-22, chrX, chrY), background of the revision suites. Built on
+      the GIAB-masked GRCh38 (see defrabb_files/resources.yml and grch38_giab_v3_masked).
+    files:
+      - url: https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/AshkenazimTrio/HG002_NA24385_son/v5.0q/HG002_GRCh38_v5.0q_smvar.vcf.gz
+        path: giab/HG002_GRCh38_v5.0q_smvar.vcf.gz
+        sha256: c7f9d7a4781f1f0a8a42ec54b051d6b95db1935c5e12318bae219740f9c50dc8  # MD5 c71acc71… matches v5.0q/checksum.md5
+      - url: https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/AshkenazimTrio/HG002_NA24385_son/v5.0q/HG002_GRCh38_v5.0q_smvar.vcf.gz.tbi
+        path: giab/HG002_GRCh38_v5.0q_smvar.vcf.gz.tbi
+        sha256: 4d77f6eb74eebf676572c70d13a0b353e3e8c81468f250739c91ad1343102eb2  # MD5 58cab2a0… matches v5.0q/checksum.md5
+      - url: https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/AshkenazimTrio/HG002_NA24385_son/v5.0q/HG002_GRCh38_v5.0q_smvar.benchmark.bed
+        path: giab/HG002_GRCh38_v5.0q_smvar.benchmark.bed
+        sha256: ef7d898dd421ea357bb9db915894ab3e5c6c1689e36ccf619befda4bbf1cef5b  # MD5 3366858a… matches v5.0q/checksum.md5
+      - url: https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/AshkenazimTrio/HG002_NA24385_son/v5.0q/NIST_HG002_v5.0q_variant-benchmarksets_README.md
+        path: giab/v5.0q/NIST_HG002_v5.0q_variant-benchmarksets_README.md
+        sha256: 14d71c9f54a7a9fcf93cb1eabe5298468e8f0bb8f60844345a6f08a53cbfb4b0  # first download 2026-10-25 (README updated 2026-07-17)
+      - url: https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/AshkenazimTrio/HG002_NA24385_son/v5.0q/checksum.md5
+        path: giab/v5.0q/checksum.md5
+        sha256: db03cf9d4dfd4917a2a26f5d069ac658272cb0cdbe1387666317ad330b5c5c70  # first download 2026-10-25
+      - url: https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/AshkenazimTrio/HG002_NA24385_son/v5.0q/defrabb_files/resources.yml
+        path: giab/v5.0q/resources.yml
+        sha256: 647cf37376764d67cd7db5a9e4aff75dadb1e519ecbc2f898abcf09444b13729  # first download 2026-10-25
+
+  grch38_giab_v3_masked:
+    description: >-
+      GIAB GRCh38 v3 no-alt analysis set with the false (incorrect) copies of the GRCh38 false
+      duplications masked (rescuing e.g. CBS, CRYAA, KCNE1, U2AF1 on chr21, MAP2K3, KMT2C,
+      KCNJ18) and decoys; the reference v5.0q was built on (v5.0q/defrabb_files/resources.yml).
+      Simulation reference of the revision suites; the pipeline keeps its own
+      reference. The prepare step checks that the primary contigs equal the no-alt analysis set
+      (dataset grch38, fetch it first) and writes the bases masked only here (10 intervals,
+      1.04 Mb on 2026-10-25, equal to GIAB's false_duplications_incorrect_copy up to a few bp).
+    files:
+      - url: https://giab-data.s3.amazonaws.com/giab-test-data/GRCh38_GIABv3_no_alt_analysis_set_maskedGRC_decoys_MAP2K3_KMT2C_KCNJ18.fasta.gz
+        path: reference/GRCh38_GIABv3_no_alt_analysis_set_maskedGRC_decoys_MAP2K3_KMT2C_KCNJ18.fasta.gz
+        sha256: b37cb9a9c0f8716fdb13e2c5c60f08cb8be40de39c3088176f1f62d9e8eeeed8  # first download 2026-10-25 (GIAB publishes no checksum; MD5 939ce190…)
+    prepare:
+      - action: decompress_fasta
+        source: reference/GRCh38_GIABv3_no_alt_analysis_set_maskedGRC_decoys_MAP2K3_KMT2C_KCNJ18.fasta.gz
+        target: reference/GRCh38_GIABv3_masked.fa
+      - action: run
+        argv: [clinval, check-references, --reference, "{data_dir}/reference/GRCh38_GIABv3_masked.fa",
+               --against, "{data_dir}/reference/GRCh38_no_alt_analysis_set.fa",
+               --masked-bed, "{data_dir}/strata/GRCh38_GIABv3_masked_false_dup.bed"]
+        creates: strata/GRCh38_GIABv3_masked_false_dup.bed
+
+  giab_strata_v3.6:
+    description: >-
+      GIAB genome stratifications v3.6, GRCh38 (recommended by the v5.0q README), strata of the
+      revision suites. Kept apart from v3.3 (strata/v3.6/), which the existing suites
+      and the fidelity config use.
+    files:
+      - url: https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/genome-stratifications/v3.6/GRCh38@all/SegmentalDuplications/GRCh38_segdups.bed.gz
+        path: strata/v3.6/GRCh38_segdups.bed.gz
+        sha256: 09ac029a7d0d681a9f0ed6581a6bc10fc708a834bc3f91c46a9bef504f6055c5  # MD5 72ec3f7d… matches genome-stratifications-md5s.txt
+      - url: https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/genome-stratifications/v3.6/GRCh38@all/Mappability/GRCh38_lowmappabilityall.bed.gz
+        path: strata/v3.6/GRCh38_lowmappabilityall.bed.gz
+        sha256: 38707879ab51dcee3dd3331c082e2d9552a9f9d487d4de84f9ebae5b5c556d56  # MD5 8a78766b… matches genome-stratifications-md5s.txt
+      - url: https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/genome-stratifications/v3.6/GRCh38@all/LowComplexity/GRCh38_AllHomopolymers_ge7bp_imperfectge11bp_slop5.bed.gz
+        path: strata/v3.6/GRCh38_AllHomopolymers_ge7bp_imperfectge11bp_slop5.bed.gz
+        sha256: 1ec3cbd1a123ff7ba8ad5ccefe9d20a5d914c003eda08010151bda55d015134d  # MD5 e4ff8193… matches genome-stratifications-md5s.txt
+      - url: https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/genome-stratifications/v3.6/GRCh38@all/LowComplexity/GRCh38_AllTandemRepeats_le50bp_slop5.bed.gz
+        path: strata/v3.6/GRCh38_AllTandemRepeats_le50bp_slop5.bed.gz
+        sha256: 811cd7105f5a70ac8244dcc4103d6f1611d8e8784b3dc164cef6c3e447ad0eb4  # MD5 1f39c10c… matches genome-stratifications-md5s.txt
+      - url: https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/genome-stratifications/v3.6/GRCh38@all/Union/GRCh38_alldifficultregions.bed.gz
+        path: strata/v3.6/GRCh38_alldifficultregions.bed.gz
+        sha256: 7cc5f35717ffeed7032ee7a88e063d0cd78510fa8322e5d747fed3f0b2e5becd  # MD5 55a6b849… matches genome-stratifications-md5s.txt
+      - url: https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/genome-stratifications/v3.6/GRCh38@all/Union/GRCh38_notinalldifficultregions.bed.gz
+        path: strata/v3.6/GRCh38_notinalldifficultregions.bed.gz
+        sha256: 9bbc18faf541223e279fc739075e521e173f548bf4e0c14280a6a160bf3b74ea  # MD5 562ebfd3… matches genome-stratifications-md5s.txt
+      - url: https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/genome-stratifications/v3.6/GRCh38@all/OtherDifficult/GRCh38_false_duplications_correct_copy.bed.gz
+        path: strata/v3.6/GRCh38_false_duplications_correct_copy.bed.gz
+        sha256: 44d07f373f6841a99fb85bd712e535e3e1364a033fd37cfd42e9e17988277717  # MD5 89e87651… matches genome-stratifications-md5s.txt
+      - url: https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/release/genome-stratifications/v3.6/GRCh38@all/OtherDifficult/GRCh38_false_duplications_incorrect_copy.bed.gz
+        path: strata/v3.6/GRCh38_false_duplications_incorrect_copy.bed.gz
+        sha256: d2de1abe40a76cb1d29dfa5ae4c0a9ae05f2301641721f4a78f6b72c3a0b5bcd  # MD5 24112e2c… matches genome-stratifications-md5s.txt
+
+  mane_v1.5:
+    description: >-
+      MANE v1.5 (NCBI/EMBL-EBI): Ensembl GTF of the MANE Select and MANE Plus Clinical transcripts
+      and the summary table; gene models of the synthetic novel variant generator.
+    files:
+      - url: https://ftp.ncbi.nlm.nih.gov/refseq/MANE/MANE_human/release_1.5/MANE.GRCh38.v1.5.ensembl_genomic.gtf.gz
+        path: mane/MANE.GRCh38.v1.5.ensembl_genomic.gtf.gz
+        sha256: 71d4b3c89c9d948683bf0db5d81b00d9ae9f3b943177b74cbd87e68f08e34d66  # first download 2026-10-28
+      - url: https://ftp.ncbi.nlm.nih.gov/refseq/MANE/MANE_human/release_1.5/MANE.GRCh38.v1.5.summary.txt.gz
+        path: mane/MANE.GRCh38.v1.5.summary.txt.gz
+        sha256: d10ace2720681a3b2e0eefd9da4f551274a6b4141ac9bfd6a2565dfb6e9ad55c  # first download 2026-10-28
+
+  clingen_gene_curation:
+    description: >-
+      ClinGen dosage sensitivity curation list, GRCh38 (haploinsufficiency scores), gene filter
+      of the synthetic novel variant generator. A moving export: the file name carries
+      the download date ({date}).
+    files:
+      - url: https://ftp.clinicalgenome.org/ClinGen_gene_curation_list_GRCh38.tsv
+        path: clingen/ClinGen_gene_curation_list_GRCh38_{date}.tsv
+        sha256: null
+
+  hg002_novaseq_30x:
+    description: >-
+      Real HG002 whole genome for the fidelity experiment: Illumina NovaSeq 6000,
+      PCR-free, 30x, 2 x 151 bp, public DeepVariant benchmarking data
+      (gs://deepvariant/benchmarking/fastq/wgs_pcr_free/30x/, GCS generation 1586401819014694 /
+      1586401818968088). Large download (44 GB).
+    files:
+      - url: https://storage.googleapis.com/deepvariant/benchmarking/fastq/wgs_pcr_free/30x/HG002.novaseq.pcr-free.30x.R1.fastq.gz
+        path: hg002_real/HG002.novaseq.pcr-free.30x.R1.fastq.gz
+        sha256: f0267be6b92cb7883327ec00ac3e5b0c1308af28566dd2f6ecc82c8e08a84687  # first download 2026-10-22; MD5 8a258d95… matches GCS
+      - url: https://storage.googleapis.com/deepvariant/benchmarking/fastq/wgs_pcr_free/30x/HG002.novaseq.pcr-free.30x.R2.fastq.gz
+        path: hg002_real/HG002.novaseq.pcr-free.30x.R2.fastq.gz
+        sha256: 253ced4013d18c5cf6ceaeee8e4b629182c4b9a573557e760e25b5ea9bb9ff1f  # first download 2026-10-22; MD5 ce716cba… matches GCS
+
+  clinvar_20260928:
+    description: ClinVar weekly VCF release 2026-09-28 (GRCh38 archive, immutable).
+    files:
+      - url: https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/archive_2.0/2026/clinvar_20260928.vcf.gz
+        path: clinvar/clinvar_20260928.vcf.gz
+        sha256: e0ac8e4d2d8f08d3faf845c5b5baa46b2051a8254cb0be4509a586fb15b81cb0  # MD5 707723f0… matches the published .md5
+      - url: https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/archive_2.0/2026/clinvar_20260928.vcf.gz.tbi
+        path: clinvar/clinvar_20260928.vcf.gz.tbi
+        sha256: d8d573e0e4739e8f8f5e60bbf5cd48e976a612d2906dfc27dfeadb874182b5c6  # first download 2026-10-07
+
+  clingen_erepo:
+    description: >-
+      ClinGen Evidence Repository, all expert-panel classifications, tab-delimited export.
+      A moving target: the file name carries the download date ({date}), which is the release
+      recorded in the suite (sources.clingen_erepo.release).
+    files:
+      - url: https://erepo.clinicalgenome.org/evrepo/api/classifications/all?format=tabbed
+        path: clingen/erepo_{date}.tsv
+        sha256: null
+
+  bias2015_hg38:
+    description: >-
+      BIAS-2015 hg38 data bundle 2026.03.01 (Nirvana variant; public S3 bucket of Bitscopic,
+      fetched over HTTPS), used by BIAS-2015 v3.0.0. The VEP-specific files are in bias2015_hg38_vep.
+    files:
+      - url: https://bias-2015.s3.amazonaws.com/v3.0.0_datasets/2026.03.01/hg38_BP1_truncating_genes.tsv
+        path: bias2015/hg38_2026.03.01/hg38_BP1_truncating_genes.tsv
+        sha256: null
+      - url: https://bias-2015.s3.amazonaws.com/v3.0.0_datasets/2026.03.01/hg38_PM1_chrom_to_pathogenic_domain_list.tsv
+        path: bias2015/hg38_2026.03.01/hg38_PM1_chrom_to_pathogenic_domain_list.tsv
+        sha256: null
+      - url: https://bias-2015.s3.amazonaws.com/v3.0.0_datasets/2026.03.01/hg38_PM4_BP3_coding_repeat_regions.tsv
+        path: bias2015/hg38_2026.03.01/hg38_PM4_BP3_coding_repeat_regions.tsv
+        sha256: null
+      - url: https://bias-2015.s3.amazonaws.com/v3.0.0_datasets/2026.03.01/hg38_PP2_missense_pathogenic_genes.tsv
+        path: bias2015/hg38_2026.03.01/hg38_PP2_missense_pathogenic_genes.tsv
+        sha256: null
+      - url: https://bias-2015.s3.amazonaws.com/v3.0.0_datasets/2026.03.01/hg38_PS1_PM5_clinvar_pathogenic_aa_nirvana.tsv
+        path: bias2015/hg38_2026.03.01/hg38_PS1_PM5_clinvar_pathogenic_aa_nirvana.tsv
+        sha256: null
+      - url: https://bias-2015.s3.amazonaws.com/v3.0.0_datasets/2026.03.01/hg38_PS3_lit_gene_aa.tsv
+        path: bias2015/hg38_2026.03.01/hg38_PS3_lit_gene_aa.tsv
+        sha256: null
+      - url: https://bias-2015.s3.amazonaws.com/v3.0.0_datasets/2026.03.01/hg38_PS3_lit_variant.tsv
+        path: bias2015/hg38_2026.03.01/hg38_PS3_lit_variant.tsv
+        sha256: null
+      - url: https://bias-2015.s3.amazonaws.com/v3.0.0_datasets/2026.03.01/hg38_PS4_gwasCatalog.txt
+        path: bias2015/hg38_2026.03.01/hg38_PS4_gwasCatalog.txt
+        sha256: null
+      - url: https://bias-2015.s3.amazonaws.com/v3.0.0_datasets/2026.03.01/hg38_PVS1_PP3_BP4_BP7_splice_data.tsv
+        path: bias2015/hg38_2026.03.01/hg38_PVS1_PP3_BP4_BP7_splice_data.tsv
+        sha256: null
+      - url: https://bias-2015.s3.amazonaws.com/v3.0.0_datasets/2026.03.01/hg38_PVS1_ncbiRefSeqHgmd.tsv
+        path: bias2015/hg38_2026.03.01/hg38_PVS1_ncbiRefSeqHgmd.tsv
+        sha256: null
+      - url: https://bias-2015.s3.amazonaws.com/v3.0.0_datasets/2026.03.01/hg38_clingen_gene_disease_validity.csv
+        path: bias2015/hg38_2026.03.01/hg38_clingen_gene_disease_validity.csv
+        sha256: null
+      - url: https://bias-2015.s3.amazonaws.com/v3.0.0_datasets/2026.03.01/hg38_gnomad_gene_constraints.txt
+        path: bias2015/hg38_2026.03.01/hg38_gnomad_gene_constraints.txt
+        sha256: null
+
+  bias2015_hg38_vep:
+    description: >-
+      VEP-specific files of the BIAS-2015 hg38 data bundle 2026.03.01 (PS1/PM5 from VEP
+      annotation, ClinVar submitter counts for PS4); fetch with bias2015_hg38.
+    files:
+      - url: https://bias-2015.s3.amazonaws.com/v3.0.0_datasets/2026.03.01/hg38_PS1_PM5_clinvar_pathogenic_aa_vep.tsv
+        path: bias2015/hg38_2026.03.01/hg38_PS1_PM5_clinvar_pathogenic_aa_vep.tsv
+        sha256: null
+      - url: https://bias-2015.s3.amazonaws.com/v3.0.0_datasets/2026.03.01/hg38_PS4_clinvar_submitter_counts.tsv
+        path: bias2015/hg38_2026.03.01/hg38_PS4_clinvar_submitter_counts.tsv
+        sha256: null
+
+  vep_hg38_annotations:
+    description: >-
+      Custom annotations and plugin data for VEP in BIAS-2015's VEP mode (BIAS doc/vep_setup.md,
+      hg38): ClinVar GRCh38 VCF release 2026-02-01 (NCBI archive; the month of the ClinVar file
+      Bitscopic ships for Nirvana, so both annotators see the same ClinVar), REVEL and
+      AlphaMissense prepared for VEP by Bitscopic.
+    files:
+      - url: https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/archive_2.0/2026/clinvar_20260201.vcf.gz
+        path: vep/hg38/clinvar_20260201.vcf.gz
+        sha256: null
+      - url: https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/archive_2.0/2026/clinvar_20260201.vcf.gz.tbi
+        path: vep/hg38/clinvar_20260201.vcf.gz.tbi
+        sha256: null
+      - url: https://bias-2015.s3.amazonaws.com/vep/hg38/revel_grch38.tsv.gz
+        path: vep/hg38/revel_grch38.tsv.gz
+        sha256: null
+      - url: https://bias-2015.s3.amazonaws.com/vep/hg38/revel_grch38.tsv.gz.tbi
+        path: vep/hg38/revel_grch38.tsv.gz.tbi
+        sha256: null
+      - url: https://bias-2015.s3.amazonaws.com/vep/hg38/AlphaMissense_hg38.tsv.gz
+        path: vep/hg38/AlphaMissense_hg38.tsv.gz
+        sha256: null
+      - url: https://bias-2015.s3.amazonaws.com/vep/hg38/AlphaMissense_hg38.tsv.gz.tbi
+        path: vep/hg38/AlphaMissense_hg38.tsv.gz.tbi
+        sha256: null
+
+  vep_cache_grch38_115:
+    description: >-
+      Ensembl VEP 115 GRCh38 cache and FASTA, installed by VEP's INSTALL.pl in the pinned
+      ensembl-vep image (the release BIAS-2015 v3.0.0 documents). About 26 GB.
+    prepare:
+      - action: run
+        argv: [mkdir, -p, "{data_dir}/vep/cache"]
+      - action: run
+        argv: [docker, run, --rm, --user, "{uid}:{gid}", -v, "{data_dir}:{data_dir}",
+               "ensemblorg/ensembl-vep:release_115.0", perl, /opt/vep/src/ensembl-vep/INSTALL.pl, --AUTO, cf,
+               --ASSEMBLY, GRCh38, --SPECIES, homo_sapiens, --CACHE_VERSION, "115",
+               --CACHEDIR, "{data_dir}/vep/cache", --NO_UPDATE]
+        creates: vep/cache/homo_sapiens/115_GRCh38/info.txt
+
+  gnomad_v4.1_exomes:
+    description: >-
+      gnomAD v4.1 exomes sites VCFs (Broad, per chromosome, about 300 GB in total) for VEP's
+      gnomAD_exomes custom annotation in BIAS-2015's VEP mode. BIAS reads AC, AN and AF from it
+      (population frequencies come from the VEP cache); the v4.1 exomes VCF has no AF_joint, which
+      BIAS's documented field list names, so that field stays empty. The prepare step keeps only the
+      INFO fields BIAS reads (AF, AF_joint, AC, AN) and concatenates the chromosomes (needs
+      bcftools on PATH); the per-chromosome files can be deleted afterwards.
+    files:
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr1.vcf.bgz
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr1.vcf.bgz
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr1.vcf.bgz.tbi
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr1.vcf.bgz.tbi
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr2.vcf.bgz
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr2.vcf.bgz
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr2.vcf.bgz.tbi
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr2.vcf.bgz.tbi
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr3.vcf.bgz
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr3.vcf.bgz
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr3.vcf.bgz.tbi
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr3.vcf.bgz.tbi
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr4.vcf.bgz
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr4.vcf.bgz
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr4.vcf.bgz.tbi
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr4.vcf.bgz.tbi
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr5.vcf.bgz
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr5.vcf.bgz
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr5.vcf.bgz.tbi
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr5.vcf.bgz.tbi
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr6.vcf.bgz
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr6.vcf.bgz
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr6.vcf.bgz.tbi
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr6.vcf.bgz.tbi
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr7.vcf.bgz
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr7.vcf.bgz
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr7.vcf.bgz.tbi
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr7.vcf.bgz.tbi
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr8.vcf.bgz
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr8.vcf.bgz
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr8.vcf.bgz.tbi
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr8.vcf.bgz.tbi
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr9.vcf.bgz
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr9.vcf.bgz
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr9.vcf.bgz.tbi
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr9.vcf.bgz.tbi
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr10.vcf.bgz
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr10.vcf.bgz
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr10.vcf.bgz.tbi
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr10.vcf.bgz.tbi
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr11.vcf.bgz
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr11.vcf.bgz
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr11.vcf.bgz.tbi
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr11.vcf.bgz.tbi
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr12.vcf.bgz
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr12.vcf.bgz
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr12.vcf.bgz.tbi
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr12.vcf.bgz.tbi
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr13.vcf.bgz
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr13.vcf.bgz
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr13.vcf.bgz.tbi
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr13.vcf.bgz.tbi
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr14.vcf.bgz
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr14.vcf.bgz
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr14.vcf.bgz.tbi
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr14.vcf.bgz.tbi
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr15.vcf.bgz
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr15.vcf.bgz
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr15.vcf.bgz.tbi
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr15.vcf.bgz.tbi
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr16.vcf.bgz
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr16.vcf.bgz
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr16.vcf.bgz.tbi
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr16.vcf.bgz.tbi
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr17.vcf.bgz
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr17.vcf.bgz
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr17.vcf.bgz.tbi
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr17.vcf.bgz.tbi
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr18.vcf.bgz
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr18.vcf.bgz
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr18.vcf.bgz.tbi
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr18.vcf.bgz.tbi
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr19.vcf.bgz
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr19.vcf.bgz
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr19.vcf.bgz.tbi
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr19.vcf.bgz.tbi
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr20.vcf.bgz
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr20.vcf.bgz
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr20.vcf.bgz.tbi
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr20.vcf.bgz.tbi
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr21.vcf.bgz
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr21.vcf.bgz
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr21.vcf.bgz.tbi
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr21.vcf.bgz.tbi
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr22.vcf.bgz
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr22.vcf.bgz
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chr22.vcf.bgz.tbi
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chr22.vcf.bgz.tbi
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chrX.vcf.bgz
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chrX.vcf.bgz
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chrX.vcf.bgz.tbi
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chrX.vcf.bgz.tbi
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chrY.vcf.bgz
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chrY.vcf.bgz
+        sha256: null
+      - url: https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/vcf/exomes/gnomad.exomes.v4.1.sites.chrY.vcf.bgz.tbi
+        path: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.chrY.vcf.bgz.tbi
+        sha256: null
+    prepare:
+      - action: run
+        argv:
+          - bash
+          - -c
+          - 'set -euo pipefail; d={data_dir}/vep/hg38/gnomad; parts=; for c in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y; do bcftools annotate --no-version --threads 4 -x ^INFO/AF,INFO/AF_joint,INFO/AC,INFO/AN -O z -o $d/slim.chr$c.vcf.gz $d/gnomad.exomes.v4.1.sites.chr$c.vcf.bgz; parts="$parts $d/slim.chr$c.vcf.gz"; done; bcftools concat --no-version --threads 4 -O z -o $d/gnomad.exomes.v4.1.sites.AF.vcf.bgz $parts; bcftools index -t $d/gnomad.exomes.v4.1.sites.AF.vcf.bgz; rm -f $parts'
+        creates: vep/hg38/gnomad/gnomad.exomes.v4.1.sites.AF.vcf.bgz.tbi
+
+  nirvana_grch38:
+    description: >-
+      Nirvana 3.18.1 GRCh38 annotation data (Cache, References, SupplementaryAnnotation) via
+      Illumina's Downloader in the clinval-nirvana image (build it first), then Bitscopic's
+      updated ClinVar (2026-02) and AlphaMissense files replacing the stale ClinVar 2023-09-30
+      bundled with Nirvana, as the BIAS-2015 README instructs. Large download.
+    prepare:
+      - action: run   # the Downloader needs an existing output directory
+        argv: [mkdir, -p, "{data_dir}/nirvana/GRCh38"]
+      - action: run
+        argv: [docker, run, --rm, --user, "{uid}:{gid}", -v, "{data_dir}:{data_dir}",
+               "clinval-nirvana:3.18.1", nirvana_downloader, --ga, GRCh38,
+               --out, "{data_dir}/nirvana/GRCh38"]
+        creates: nirvana/GRCh38/References/Homo_sapiens.GRCh38.Nirvana.dat
+      # Keep only Bitscopic's ClinVar 2026-02 (nirvana_grch38_updates). The BIAS README names
+      # ClinVar_20230930; Illumina's manifest now ships 20231230 and a 20240301 preview instead.
+      - action: remove
+        paths:
+          - nirvana/GRCh38/SupplementaryAnnotation/GRCh38/ClinVar_20230930.nsa
+          - nirvana/GRCh38/SupplementaryAnnotation/GRCh38/ClinVar_20230930.nsa.idx
+          - nirvana/GRCh38/SupplementaryAnnotation/GRCh38/ClinVar_20230930.nsi
+          - nirvana/GRCh38/SupplementaryAnnotation/GRCh38/ClinVar_20231230.nsa
+          - nirvana/GRCh38/SupplementaryAnnotation/GRCh38/ClinVar_20231230.nsa.idx
+          - nirvana/GRCh38/SupplementaryAnnotation/GRCh38/ClinVar_20231230.nsi
+          - nirvana/GRCh38/SupplementaryAnnotation/GRCh38/ClinVar_preview_20240301.nsa
+          - nirvana/GRCh38/SupplementaryAnnotation/GRCh38/ClinVar_preview_20240301.nsa.idx
+          - nirvana/GRCh38/SupplementaryAnnotation/GRCh38/ClinVar_preview_20240301.nsi
+
+  nirvana_grch38_updates:
+    description: >-
+      Bitscopic's updated Nirvana supplementary annotation for GRCh38: ClinVar 2026-02 and
+      AlphaMissense (fetch after nirvana_grch38).
+    files:
+      - url: https://bias-2015.s3.amazonaws.com/nirvana_data/GRCh38_updated/AlphaMissense_hg38.nirvana.nsa
+        path: nirvana/GRCh38/SupplementaryAnnotation/GRCh38/AlphaMissense_hg38.nirvana.nsa
+        sha256: null
+      - url: https://bias-2015.s3.amazonaws.com/nirvana_data/GRCh38_updated/AlphaMissense_hg38.nirvana.nsa.idx
+        path: nirvana/GRCh38/SupplementaryAnnotation/GRCh38/AlphaMissense_hg38.nirvana.nsa.idx
+        sha256: null
+      - url: https://bias-2015.s3.amazonaws.com/nirvana_data/GRCh38_updated/AlphaMissense_hg38.nirvana.nsa.schema
+        path: nirvana/GRCh38/SupplementaryAnnotation/GRCh38/AlphaMissense_hg38.nirvana.nsa.schema
+        sha256: null
+      - url: https://bias-2015.s3.amazonaws.com/nirvana_data/GRCh38_updated/ClinVar_hg38_2026-02.nsa
+        path: nirvana/GRCh38/SupplementaryAnnotation/GRCh38/ClinVar_hg38_2026-02.nsa
+        sha256: null
+      - url: https://bias-2015.s3.amazonaws.com/nirvana_data/GRCh38_updated/ClinVar_hg38_2026-02.nsa.idx
+        path: nirvana/GRCh38/SupplementaryAnnotation/GRCh38/ClinVar_hg38_2026-02.nsa.idx
+        sha256: null
+      - url: https://bias-2015.s3.amazonaws.com/nirvana_data/GRCh38_updated/ClinVar_hg38_2026-02.nsa.schema
+        path: nirvana/GRCh38/SupplementaryAnnotation/GRCh38/ClinVar_hg38_2026-02.nsa.schema
+        sha256: null
+
+  clingen_erepo_bias_validation:
+    description: >-
+      eRepo export used to validate BIAS-2015 (bitscopic/BIAS-2015-data v1.0.0,
+      validation_data/erepo.tabbed.txt; 7632 classifications approved 2015-12-16..2024-08-02).
+      This is the benchmark of the earlier BIAS-2015 paper (eRepo v1.0.29, Eisenhart et al. 2024),
+      not the V2.2.0 one; see bias2015_erepo_benchmark_v2.2.0.
+    files:
+      - url: https://raw.githubusercontent.com/bitscopic/BIAS-2015-data/v1.0.0/validation_data/erepo.tabbed.txt
+        path: clingen/erepo_bias2015_validation_v1.0.0.tsv
+        sha256: d5bf48211f5f64a281b8b7f3e4d3833419738a9d553a213b1ed042759e222719  # downloaded 2026-10-08
+
+  bias2015_erepo_benchmark_v2.2.0:
+    description: >-
+      The variants of the ClinGen eRepo V2.2.0 snapshot (accessed 2025-02-02) on which BIAS-2015
+      v2.1.1 was benchmarked: Additional file 2 of Eisenhart et al. 2025, Genome Med 17:148
+      (8,707 records, hg19, positions and alleles only), lifted to GRCh38 with CrossMap and the
+      UCSC hg19ToHg38 chain. The held-out reference of the article (`clinval held-out
+      --reference clingen/bias2015_erepo_v2.2.0_benchmark.grch38.vcf`); needs grch38.
+    files:
+      - url: https://static-content.springer.com/esm/art%3A10.1186%2Fs13073-025-01581-y/MediaObjects/13073_2025_1581_MOESM2_ESM.vcf
+        path: clingen/bias2015_erepo_v2.2.0_benchmark.hg19.vcf
+        sha256: 95cc0931f9ce419ff4f37f289dc03310603b76be0eb04ffebb4b8ae5472edf04  # downloaded 2026-10-25
+      - url: https://hgdownload.soe.ucsc.edu/goldenPath/hg19/liftOver/hg19ToHg38.over.chain.gz
+        path: liftover/hg19ToHg38.over.chain.gz
+        sha256: 5c0598e500ceb5a78c73086929e8ef993aec309bcafb595139b53d440b125a1d  # downloaded 2026-10-25
+    prepare:
+      - action: run
+        argv: [docker, run, --rm, --user, "{uid}:{gid}", -v, "{data_dir}:{data_dir}",
+               "quay.io/biocontainers/crossmap@sha256:0c480da07a3c26d1e8f869bee6db0461f827d3954d1f0499f57efa43d9d2e569",
+               CrossMap, vcf, "{data_dir}/liftover/hg19ToHg38.over.chain.gz",
+               "{data_dir}/clingen/bias2015_erepo_v2.2.0_benchmark.hg19.vcf",
+               "{data_dir}/reference/GRCh38_no_alt_analysis_set.fa",
+               "{data_dir}/clingen/bias2015_erepo_v2.2.0_benchmark.grch38.vcf"]
+        creates: clingen/bias2015_erepo_v2.2.0_benchmark.grch38.vcf
+
+  clingen_erepo_v2.2.0:
+    description: >-
+      ClinGen eRepo export of the release BIAS-2015 was tuned on (V2.2.0). Not published; the
+      variants are available as bias2015_erepo_benchmark_v2.2.0 (used instead).
+    manual: >-
+      Obtain the eRepo v2.2.0 export used by the BIAS-2015 authors (e.g. from their
+      publication's supplementary data or by request) and save it as
+      clingen/erepo_v2.2.0.tsv; it needs a Uuid or Allele Registry Id column.

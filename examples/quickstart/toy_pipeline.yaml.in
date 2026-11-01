@@ -1,0 +1,42 @@
+# Toy system under test for the quickstart. NOT a clinical pipeline: it only shows how any
+# pipeline is plugged in through the generic command adapter (docs/manual.md, section 8).
+# run_quickstart.sh fills in @NAME@, @REPO@, @RUN@, @PYTHON@ and @FLAGS@ and writes two pipelines to
+# the run directory: the baseline "toy" and the candidate "toy-noPP5BP6" (classifier without PP5/BP6).
+schema_version: 1
+name: @NAME@
+description: "bcftools on Mason's true alignments + a lookup-table ACMG classifier"
+
+secondary:                       # step 4: FASTQ -> VCF
+  adapter: command
+  command:
+    command:
+      tool_name: toy-caller
+      version: "0.1"
+      runner: local
+      argv: ["@REPO@/examples/quickstart/toy_caller.sh", "{fastq_r1}", "{sample}", "{fasta}", "{outdir}"]
+    outputs:
+      raw_vcf: calls.vcf.gz
+
+tertiary:                        # step 5: VCF -> classified, reportable findings
+  adapter: command
+  input: raw
+  pass_only: true
+  report_classifications: [pathogenic, likely_pathogenic]
+  command:
+    command:
+      tool_name: toy-acmg
+      version: "0.1"
+      runner: local
+      argv: ["@PYTHON@", "@REPO@/examples/quickstart/toy_classifier.py",
+             "@RUN@/variants.selected.tsv", "{input_vcf}", "{output}"@FLAGS@]
+    output: "{sample}.acmg.tsv"
+    parser:
+      format: tsv
+      columns: { chrom: CHROM, pos: POS, ref: REF, alt: ALT, classification: CLASSIFICATION,
+                 criteria: CRITERIA, gene: GENE }
+      classification_map:
+        Pathogenic: pathogenic
+        Likely pathogenic: likely_pathogenic
+        VUS: uncertain_significance
+        Likely benign: likely_benign
+        Benign: benign

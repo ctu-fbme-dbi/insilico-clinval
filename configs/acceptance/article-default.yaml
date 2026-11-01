@@ -1,0 +1,10 @@
+# Acceptance criteria used in the article as an example configuration. Each laboratory sets its
+# own thresholds; the file is fixed before a run is evaluated.
+schema_version: 1
+name: article-default
+criteria:
+  - {metric: planted_calling, min_point: 1.0}
+  - {metric: report_sensitivity, min_point: 0.95}
+  - {metric: report_specificity, min_point: 0.95}
+  - {metric: report_sensitivity, subset: {held_out: "true"}, min_lower: 0.80}
+  - {metric: false_reports, subset: {call: fp_call}, max_count: 0}

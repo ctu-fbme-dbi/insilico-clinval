@@ -1,0 +1,87 @@
+# Fixture suite for the ClinGen eRepo source and the HG002-like background.
+# Uses only files in tests/fixtures/ (paths relative to this file).
+schema_version: 1
+suite:
+  name: fixture-erepo-suite
+  version: "0.1"
+  seed: 20260928
+
+reference:
+  build: GRCh38
+  fasta: ref.fa
+  par_regions:
+    - { chrom: chrX, start: 1, end: 1000 }
+    - { chrom: chrY, start: 1, end: 500 }
+
+sources:
+  clingen_erepo:
+    file: erepo_mini.tsv
+    release: "fixture-2026-09"
+    held_out_reference: { release: "v2.2.0", file: erepo_v2.2.0_mini.tsv }
+  strata:
+    cmrg: strata_cmrg.bed
+
+constraints:
+  min_distance_bp: 300
+  allowed_variant_types: [snv, insertion, deletion, delins]
+  max_indel_length: 20
+  indel_ladder: [[1, 5], [6, 10], [11, 20]]
+
+selection:
+  - id: erepo_plp
+    category: curated
+    source: clingen_erepo
+    classification_allow: [pathogenic, likely_pathogenic]
+    genes: [GENEA, GENEB, GENEX]
+    per_gene: 2
+    required: true
+    expected: { classification: [pathogenic, likely_pathogenic], reportable: true, level: both }
+    samples: [positive]
+
+  - id: erepo_blb          # negative controls on the same genes
+    category: curated
+    source: clingen_erepo
+    classification_allow: [benign, likely_benign]
+    genes: [GENEA, GENEB, GENEX]
+    per_gene: 2
+    required: true
+    expected: { classification: [benign, likely_benign], reportable: false, level: both }
+    samples: [negative]
+
+  - id: synthetic_lof
+    category: synthetic_novel
+    source: explicit
+    variants:
+      - chrom: chr2
+        pos: 5100
+        ref: G
+        alt: T
+        gene: GENEC
+        classification: likely_pathogenic
+        acmg_criteria: [PVS1, PM2]
+        rationale: "novel nonsense in GENEC (fixture)"
+    expected: { classification: [pathogenic, likely_pathogenic], reportable: true, level: interpretation }
+    samples: [positive]
+
+background:
+  name: GIAB_HG002
+  vcf: hg002_mini.vcf.gz
+  bed: hg002_mini.bed
+  release: "fixture-v4.2.1"
+  sex: male
+
+samples:
+  - sample_id: positive
+    role: positive
+    sex: male
+  - sample_id: negative
+    role: negative
+    sex: male
+
+simulation:
+  profile: sim_profile.yaml
+  mode: region
+  flank_bp: 600
+
+output:
+  directory: ../../runs/fixture_erepo

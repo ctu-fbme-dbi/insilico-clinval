@@ -1,0 +1,1660 @@
+{
+  "$defs": {
+    "BackgroundConfig": {
+      "additionalProperties": false,
+      "description": "Background genome (small-variant benchmark VCF + BED), e.g. GIAB HG002 v4.2.1 GRCh38.",
+      "properties": {
+        "bed": {
+          "title": "Bed",
+          "type": "string"
+        },
+        "max_length": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "skip records with a longer allele (event_length)",
+          "title": "Max Length"
+        },
+        "min_distance_bp": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "remove records closer than this to a planted variant; null = constraints.min_distance_bp",
+          "title": "Min Distance Bp"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "release": {
+          "title": "Release",
+          "type": "string"
+        },
+        "require_pass": {
+          "default": false,
+          "description": "skip records with a FILTER other than PASS or missing (.)",
+          "title": "Require Pass",
+          "type": "boolean"
+        },
+        "restrict_to_bed": {
+          "default": false,
+          "description": "skip records whose REF span is not inside the BED",
+          "title": "Restrict To Bed",
+          "type": "boolean"
+        },
+        "sample": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "VCF sample column; null = the first",
+          "title": "Sample"
+        },
+        "sex": {
+          "$ref": "#/$defs/Sex",
+          "description": "sex of the background individual (HG002: male)"
+        },
+        "spanning_deletion": {
+          "default": "skip",
+          "description": "'*' alleles: skip the whole record, or read them as REF on their haplotype",
+          "enum": [
+            "skip",
+            "ref"
+          ],
+          "title": "Spanning Deletion",
+          "type": "string"
+        },
+        "vcf": {
+          "description": "bgzipped + tabix-indexed VCF",
+          "title": "Vcf",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "vcf",
+        "bed",
+        "release",
+        "sex"
+      ],
+      "title": "BackgroundConfig",
+      "type": "object"
+    },
+    "Classification": {
+      "enum": [
+        "pathogenic",
+        "likely_pathogenic",
+        "uncertain_significance",
+        "likely_benign",
+        "benign"
+      ],
+      "title": "Classification",
+      "type": "string"
+    },
+    "ClinGenErepoSource": {
+      "additionalProperties": false,
+      "properties": {
+        "file": {
+          "description": "tab-delimited eRepo download",
+          "title": "File",
+          "type": "string"
+        },
+        "held_out_reference": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HeldOutReference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "release": {
+          "title": "Release",
+          "type": "string"
+        }
+      },
+      "required": [
+        "file",
+        "release"
+      ],
+      "title": "ClinGenErepoSource",
+      "type": "object"
+    },
+    "ClinGenRule": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "$ref": "#/$defs/VariantCategory"
+        },
+        "classification_allow": {
+          "items": {
+            "$ref": "#/$defs/Classification"
+          },
+          "minItems": 1,
+          "title": "Classification Allow",
+          "type": "array"
+        },
+        "compound_het": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CompoundHet"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "conditions": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "MONDO ids",
+          "title": "Conditions"
+        },
+        "count": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Count"
+        },
+        "erepo_ids": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Erepo Ids"
+        },
+        "exclude_strata": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Exclude Strata"
+        },
+        "expected": {
+          "$ref": "#/$defs/ExpectedSpec"
+        },
+        "genes": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Genes"
+        },
+        "held_out": {
+          "default": "include",
+          "enum": [
+            "include",
+            "exclude",
+            "only"
+          ],
+          "title": "Held Out",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9_.-]+$",
+          "title": "Id",
+          "type": "string"
+        },
+        "ladder_per_bin": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ladder Per Bin"
+        },
+        "per_gene": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Per Gene"
+        },
+        "region_bed": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Region Bed"
+        },
+        "required": {
+          "default": false,
+          "title": "Required",
+          "type": "boolean"
+        },
+        "samples": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Samples",
+          "type": "array"
+        },
+        "source": {
+          "const": "clingen_erepo",
+          "title": "Source",
+          "type": "string"
+        },
+        "strata": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Strata"
+        },
+        "variant_types": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/VariantType"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Variant Types"
+        },
+        "vceps": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Vceps"
+        },
+        "zygosity": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Zygosity"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "id",
+        "category",
+        "samples",
+        "expected",
+        "source",
+        "classification_allow"
+      ],
+      "title": "ClinGenRule",
+      "type": "object"
+    },
+    "ClinVarRule": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "$ref": "#/$defs/VariantCategory"
+        },
+        "clnsig_allow": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Clnsig Allow",
+          "type": "array"
+        },
+        "clnvc": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Clnvc"
+        },
+        "compound_het": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CompoundHet"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "conditions": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Conditions"
+        },
+        "count": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Count"
+        },
+        "exclude_strata": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Exclude Strata"
+        },
+        "expected": {
+          "$ref": "#/$defs/ExpectedSpec"
+        },
+        "genes": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Genes"
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9_.-]+$",
+          "title": "Id",
+          "type": "string"
+        },
+        "ladder_per_bin": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ladder Per Bin"
+        },
+        "min_stars": {
+          "default": 0,
+          "maximum": 4,
+          "minimum": 0,
+          "title": "Min Stars",
+          "type": "integer"
+        },
+        "per_gene": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Per Gene"
+        },
+        "region_bed": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Region Bed"
+        },
+        "required": {
+          "default": false,
+          "title": "Required",
+          "type": "boolean"
+        },
+        "rsids": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rsids"
+        },
+        "samples": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Samples",
+          "type": "array"
+        },
+        "source": {
+          "const": "clinvar",
+          "title": "Source",
+          "type": "string"
+        },
+        "strata": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Strata"
+        },
+        "variant_types": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/VariantType"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Variant Types"
+        },
+        "variation_ids": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Variation Ids"
+        },
+        "zygosity": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Zygosity"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "id",
+        "category",
+        "samples",
+        "expected",
+        "source",
+        "clnsig_allow"
+      ],
+      "title": "ClinVarRule",
+      "type": "object"
+    },
+    "ClinVarSource": {
+      "additionalProperties": false,
+      "properties": {
+        "release": {
+          "title": "Release",
+          "type": "string"
+        },
+        "vcf": {
+          "title": "Vcf",
+          "type": "string"
+        }
+      },
+      "required": [
+        "vcf",
+        "release"
+      ],
+      "title": "ClinVarSource",
+      "type": "object"
+    },
+    "CompoundHet": {
+      "additionalProperties": false,
+      "description": "Pair selected variants of the same gene (in rank order) into phase sets.",
+      "properties": {
+        "phase": {
+          "$ref": "#/$defs/Phase"
+        }
+      },
+      "required": [
+        "phase"
+      ],
+      "title": "CompoundHet",
+      "type": "object"
+    },
+    "Condition": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Id"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "Condition",
+      "type": "object"
+    },
+    "Constraints": {
+      "additionalProperties": false,
+      "properties": {
+        "allowed_variant_types": {
+          "items": {
+            "$ref": "#/$defs/VariantType"
+          },
+          "title": "Allowed Variant Types",
+          "type": "array"
+        },
+        "indel_ladder": {
+          "items": {
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "type": "array"
+          },
+          "title": "Indel Ladder",
+          "type": "array"
+        },
+        "max_indel_length": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Indel Length"
+        },
+        "min_distance_bp": {
+          "minimum": 0,
+          "title": "Min Distance Bp",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "min_distance_bp",
+        "allowed_variant_types"
+      ],
+      "title": "Constraints",
+      "type": "object"
+    },
+    "EvaluationLevel": {
+      "enum": [
+        "calling",
+        "interpretation",
+        "both"
+      ],
+      "title": "EvaluationLevel",
+      "type": "string"
+    },
+    "ExpectedSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "basis": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Basis"
+        },
+        "classification": {
+          "description": "acceptable classifications",
+          "items": {
+            "$ref": "#/$defs/Classification"
+          },
+          "title": "Classification",
+          "type": "array"
+        },
+        "level": {
+          "$ref": "#/$defs/EvaluationLevel"
+        },
+        "reportable": {
+          "title": "Reportable",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "reportable",
+        "level"
+      ],
+      "title": "ExpectedSpec",
+      "type": "object"
+    },
+    "ExplicitRule": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "$ref": "#/$defs/VariantCategory"
+        },
+        "compound_het": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CompoundHet"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "expected": {
+          "$ref": "#/$defs/ExpectedSpec"
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9_.-]+$",
+          "title": "Id",
+          "type": "string"
+        },
+        "required": {
+          "default": false,
+          "title": "Required",
+          "type": "boolean"
+        },
+        "samples": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Samples",
+          "type": "array"
+        },
+        "source": {
+          "const": "explicit",
+          "title": "Source",
+          "type": "string"
+        },
+        "variants": {
+          "items": {
+            "$ref": "#/$defs/ExplicitVariant"
+          },
+          "title": "Variants",
+          "type": "array"
+        },
+        "zygosity": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Zygosity"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "id",
+        "category",
+        "samples",
+        "expected",
+        "source",
+        "variants"
+      ],
+      "title": "ExplicitRule",
+      "type": "object"
+    },
+    "ExplicitVariant": {
+      "additionalProperties": false,
+      "properties": {
+        "acmg_criteria": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Acmg Criteria",
+          "type": "array"
+        },
+        "alt": {
+          "pattern": "^[ACGTacgt]+$",
+          "title": "Alt",
+          "type": "string"
+        },
+        "chrom": {
+          "title": "Chrom",
+          "type": "string"
+        },
+        "classification": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Classification"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "condition": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Condition"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "gene": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Gene"
+        },
+        "pos": {
+          "minimum": 1,
+          "title": "Pos",
+          "type": "integer"
+        },
+        "rationale": {
+          "title": "Rationale",
+          "type": "string"
+        },
+        "ref": {
+          "pattern": "^[ACGTacgt]+$",
+          "title": "Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "chrom",
+        "pos",
+        "ref",
+        "alt",
+        "rationale"
+      ],
+      "title": "ExplicitVariant",
+      "type": "object"
+    },
+    "GiabRule": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "$ref": "#/$defs/VariantCategory"
+        },
+        "compound_het": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CompoundHet"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "count": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Count"
+        },
+        "counts": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "integer"
+              },
+              "propertyNames": {
+                "$ref": "#/$defs/VariantType"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Counts"
+        },
+        "exclude_strata": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Exclude Strata"
+        },
+        "expected": {
+          "$ref": "#/$defs/ExpectedSpec"
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9_.-]+$",
+          "title": "Id",
+          "type": "string"
+        },
+        "ladder_per_bin": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ladder Per Bin"
+        },
+        "region_bed": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Region Bed"
+        },
+        "required": {
+          "default": false,
+          "title": "Required",
+          "type": "boolean"
+        },
+        "samples": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Samples",
+          "type": "array"
+        },
+        "source": {
+          "const": "giab",
+          "title": "Source",
+          "type": "string"
+        },
+        "strata": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Strata"
+        },
+        "variant_types": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/VariantType"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Variant Types"
+        },
+        "zygosity": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Zygosity"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "id",
+        "category",
+        "samples",
+        "expected",
+        "source"
+      ],
+      "title": "GiabRule",
+      "type": "object"
+    },
+    "GiabSource": {
+      "additionalProperties": false,
+      "properties": {
+        "confident_bed": {
+          "title": "Confident Bed",
+          "type": "string"
+        },
+        "name": {
+          "default": "GIAB",
+          "title": "Name",
+          "type": "string"
+        },
+        "release": {
+          "title": "Release",
+          "type": "string"
+        },
+        "truth_vcf": {
+          "title": "Truth Vcf",
+          "type": "string"
+        }
+      },
+      "required": [
+        "truth_vcf",
+        "confident_bed",
+        "release"
+      ],
+      "title": "GiabSource",
+      "type": "object"
+    },
+    "HeldOutReference": {
+      "additionalProperties": false,
+      "description": "The held-out reference release; alleles absent from it are ``held_out``.",
+      "properties": {
+        "file": {
+          "description": "eRepo export of that release (needs a Uuid or CAID column), or a GRCh38 VCF of its alleles (.vcf, .vcf.gz; matched by left-normalized allele)",
+          "title": "File",
+          "type": "string"
+        },
+        "release": {
+          "description": "e.g. v2.2.0 (the release BIAS-2015 was tuned on)",
+          "title": "Release",
+          "type": "string"
+        }
+      },
+      "required": [
+        "release",
+        "file"
+      ],
+      "title": "HeldOutReference",
+      "type": "object"
+    },
+    "OutputConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "directory": {
+          "title": "Directory",
+          "type": "string"
+        }
+      },
+      "required": [
+        "directory"
+      ],
+      "title": "OutputConfig",
+      "type": "object"
+    },
+    "Phase": {
+      "description": "Relative phase of the members of a compound-heterozygous phase set.",
+      "enum": [
+        "cis",
+        "trans"
+      ],
+      "title": "Phase",
+      "type": "string"
+    },
+    "PhaseSetSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "phase": {
+          "$ref": "#/$defs/Phase"
+        },
+        "variants": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 2,
+          "title": "Variants",
+          "type": "array"
+        }
+      },
+      "required": [
+        "variants",
+        "phase"
+      ],
+      "title": "PhaseSetSpec",
+      "type": "object"
+    },
+    "ReferenceConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "build": {
+          "const": "GRCh38",
+          "title": "Build",
+          "type": "string"
+        },
+        "fasta": {
+          "title": "Fasta",
+          "type": "string"
+        },
+        "par_regions": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/Region"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "pseudo-autosomal regions; null = GRCh38 PAR1/PAR2 (see constants.py)",
+          "title": "Par Regions"
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sha256"
+        }
+      },
+      "required": [
+        "build",
+        "fasta"
+      ],
+      "title": "ReferenceConfig",
+      "type": "object"
+    },
+    "Region": {
+      "additionalProperties": false,
+      "description": "1-based, closed interval.",
+      "properties": {
+        "chrom": {
+          "title": "Chrom",
+          "type": "string"
+        },
+        "end": {
+          "minimum": 1,
+          "title": "End",
+          "type": "integer"
+        },
+        "start": {
+          "minimum": 1,
+          "title": "Start",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "chrom",
+        "start",
+        "end"
+      ],
+      "title": "Region",
+      "type": "object"
+    },
+    "SampleConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "background": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "merge the suite background; null = yes if one is configured",
+          "title": "Background"
+        },
+        "default_zygosity": {
+          "default": "het",
+          "enum": [
+            "het",
+            "hom"
+          ],
+          "title": "Default Zygosity",
+          "type": "string"
+        },
+        "overrides": {
+          "items": {
+            "$ref": "#/$defs/VariantOverride"
+          },
+          "title": "Overrides",
+          "type": "array"
+        },
+        "phase_sets": {
+          "items": {
+            "$ref": "#/$defs/PhaseSetSpec"
+          },
+          "title": "Phase Sets",
+          "type": "array"
+        },
+        "role": {
+          "$ref": "#/$defs/SampleRole"
+        },
+        "sample_id": {
+          "pattern": "^[A-Za-z0-9_.-]+$",
+          "title": "Sample Id",
+          "type": "string"
+        },
+        "sex": {
+          "$ref": "#/$defs/Sex"
+        }
+      },
+      "required": [
+        "sample_id",
+        "role",
+        "sex"
+      ],
+      "title": "SampleConfig",
+      "type": "object"
+    },
+    "SampleRole": {
+      "enum": [
+        "positive",
+        "negative",
+        "mixed"
+      ],
+      "title": "SampleRole",
+      "type": "string"
+    },
+    "Sex": {
+      "enum": [
+        "female",
+        "male"
+      ],
+      "title": "Sex",
+      "type": "string"
+    },
+    "SimulationConfig": {
+      "additionalProperties": false,
+      "description": "Read simulation: profile file and which part of the genome is simulated.",
+      "properties": {
+        "extra_regions_bed": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "region mode: additional regions, e.g. paralogous loci",
+          "title": "Extra Regions Bed"
+        },
+        "flank_bp": {
+          "default": 1500,
+          "description": "region mode: bases simulated on each side of a variant",
+          "minimum": 0,
+          "title": "Flank Bp",
+          "type": "integer"
+        },
+        "genome_contigs": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "genome mode: contigs to simulate; null = chr1-22, chrX, chrY",
+          "title": "Genome Contigs"
+        },
+        "mason_batch_bp": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "split each ploidy group into Mason runs of consecutive whole segments of at most this many bp (a longer segment runs alone); caps Mason's temporary disk use; changes the reads; null = one Mason run per group",
+          "title": "Mason Batch Bp"
+        },
+        "min_alt_reads": {
+          "default": 1,
+          "description": "planting check: alt reads required on each carrying haplotype",
+          "minimum": 1,
+          "title": "Min Alt Reads",
+          "type": "integer"
+        },
+        "mode": {
+          "$ref": "#/$defs/SimulationMode",
+          "default": "region"
+        },
+        "profile": {
+          "description": "simulation profile YAML (configs/profiles/)",
+          "title": "Profile",
+          "type": "string"
+        }
+      },
+      "required": [
+        "profile"
+      ],
+      "title": "SimulationConfig",
+      "type": "object"
+    },
+    "SimulationMode": {
+      "enum": [
+        "region",
+        "genome"
+      ],
+      "title": "SimulationMode",
+      "type": "string"
+    },
+    "Sources": {
+      "additionalProperties": false,
+      "properties": {
+        "clingen_erepo": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ClinGenErepoSource"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "clinvar": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ClinVarSource"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "giab": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/GiabSource"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "strata": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Strata",
+          "type": "object"
+        }
+      },
+      "title": "Sources",
+      "type": "object"
+    },
+    "SuiteInfo": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "seed": {
+          "title": "Seed",
+          "type": "integer"
+        },
+        "version": {
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "seed"
+      ],
+      "title": "SuiteInfo",
+      "type": "object"
+    },
+    "VariantCategory": {
+      "enum": [
+        "standard",
+        "curated",
+        "difficult",
+        "synthetic_novel"
+      ],
+      "title": "VariantCategory",
+      "type": "string"
+    },
+    "VariantOverride": {
+      "additionalProperties": false,
+      "properties": {
+        "variant_id": {
+          "title": "Variant Id",
+          "type": "string"
+        },
+        "zygosity": {
+          "$ref": "#/$defs/Zygosity"
+        }
+      },
+      "required": [
+        "variant_id",
+        "zygosity"
+      ],
+      "title": "VariantOverride",
+      "type": "object"
+    },
+    "VariantType": {
+      "enum": [
+        "snv",
+        "mnv",
+        "insertion",
+        "deletion",
+        "delins"
+      ],
+      "title": "VariantType",
+      "type": "string"
+    },
+    "Zygosity": {
+      "enum": [
+        "het",
+        "hom",
+        "hemi"
+      ],
+      "title": "Zygosity",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "background": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/BackgroundConfig"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "constraints": {
+      "$ref": "#/$defs/Constraints"
+    },
+    "output": {
+      "$ref": "#/$defs/OutputConfig"
+    },
+    "reference": {
+      "$ref": "#/$defs/ReferenceConfig"
+    },
+    "samples": {
+      "items": {
+        "$ref": "#/$defs/SampleConfig"
+      },
+      "minItems": 1,
+      "title": "Samples",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "selection": {
+      "items": {
+        "discriminator": {
+          "mapping": {
+            "clingen_erepo": "#/$defs/ClinGenRule",
+            "clinvar": "#/$defs/ClinVarRule",
+            "explicit": "#/$defs/ExplicitRule",
+            "giab": "#/$defs/GiabRule"
+          },
+          "propertyName": "source"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/$defs/ClinGenRule"
+          },
+          {
+            "$ref": "#/$defs/ClinVarRule"
+          },
+          {
+            "$ref": "#/$defs/GiabRule"
+          },
+          {
+            "$ref": "#/$defs/ExplicitRule"
+          }
+        ]
+      },
+      "minItems": 1,
+      "title": "Selection",
+      "type": "array"
+    },
+    "simulation": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/SimulationConfig"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "sources": {
+      "$ref": "#/$defs/Sources"
+    },
+    "suite": {
+      "$ref": "#/$defs/SuiteInfo"
+    }
+  },
+  "required": [
+    "schema_version",
+    "suite",
+    "reference",
+    "sources",
+    "constraints",
+    "selection",
+    "samples",
+    "output"
+  ],
+  "title": "SuiteConfig",
+  "type": "object"
+}

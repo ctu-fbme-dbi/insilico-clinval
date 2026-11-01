@@ -1,0 +1,3 @@
+# Runtime: every external tool from PATH (the default when --runtime is not given).
+schema_version: 1
+default_runner: local

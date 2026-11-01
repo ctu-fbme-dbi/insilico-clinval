@@ -1,0 +1,51 @@
+# Fidelity experiment (manuscript Figure 4): the positive sample of
+# acmg_sf32_full1 (simulated, HG002 v4.2.1 background + planted variants) vs a real HG002 genome,
+# both processed by the same nf-core/sarek run configuration. Paths are relative to this file.
+#
+#   clinval fidelity --config configs/fidelity/hg002_full1.yaml --out runs/fidelity_hg002 \
+#                    --runtime configs/runtime/docker.yaml            # hap.py from its image
+#
+# Steps can run separately (--step planting|qc|calling); fidelity.json is rebuilt each time.
+# The Sarek output paths below follow the sarek-run layout on the server (results/ of the launch
+# directory, DeepVariant); adjust them to the analysis directories actually used.
+schema_version: 1
+name: hg002-full1-sim-vs-real
+reference: ../../data/reference/GRCh38_no_alt_analysis_set.fa
+confident_bed: ../../data/giab/HG002_GRCh38_1_22_v4.2.1_benchmark_noinconsistent.bed
+
+stratifications:
+  all_difficult: ../../data/strata/GRCh38_alldifficultregions.bed.gz
+  not_difficult: ../../data/strata/GRCh38_notinalldifficultregions.bed.gz
+  homopolymers: ../../data/strata/GRCh38_AllHomopolymers_ge7bp_imperfectge11bp_slop5.bed.gz
+  tandem_repeats: ../../data/strata/GRCh38_AllTandemRepeats_le50bp_slop5.bed.gz
+  low_mappability: ../../data/strata/GRCh38_lowmappabilityall.bed.gz
+  segdups: ../../data/strata/GRCh38_segdups.bed.gz
+  cmrg: ../../data/strata/HG002_GRCh38_CMRG_smallvar_v1.00.bed
+
+datasets:
+  - id: simulated
+    label: Simulated HG002 (Mason, 30x)
+    alignment: ../../../clinval-secondary-analysis/acmg_sf32_full1/sarek/results/preprocessing/markduplicates/positive/positive.md.cram
+    vcf: ../../../clinval-secondary-analysis/acmg_sf32_full1/sarek/results/variant_calling/deepvariant/positive/positive.deepvariant.vcf.gz
+    truth_vcf: ../../runs/acmg_sf32_full1/positive.truth.vcf.gz
+  - id: real
+    label: Real HG002
+    alignment: ../../../clinval-secondary-analysis/hg002_real/sarek/results/preprocessing/markduplicates/HG002/HG002.md.cram
+    vcf: ../../../clinval-secondary-analysis/hg002_real/sarek/results/variant_calling/deepvariant/HG002/HG002.deepvariant.vcf.gz
+    truth_vcf: ../../data/giab/HG002_GRCh38_1_22_v4.2.1_benchmark.vcf.gz
+baseline: real
+recall_gap: null   # manuscript threshold [TO DEFINE]
+
+happy:
+  engine: vcfeval
+  threads: 16
+  pass_only: true
+
+planting:
+  - ../../runs/acmg_sf32_short1
+  - ../../runs/acmg_sf32_short2
+  - ../../runs/acmg_sf32_short3
+  - ../../runs/acmg_sf32_full1
+  - ../../runs/acmg_sf32_full2
+
+threads: 16

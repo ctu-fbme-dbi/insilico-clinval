@@ -1,0 +1,40 @@
+# Generator config of the deletion supplement to the synthetic novel variant experiment.
+# exp_synthetic_v5q holds 169 frameshift insertions and 5 deletions: excluding every candidate
+# whose deleted span holds a ClinVar, eRepo or gnomAD record leaves almost no deletions in the SF
+# genes. Here frameshift deletions only, excluded by records at their breakpoints (and identical
+# alleles); one more sample, positive4, in its own suite.
+#   python scripts/generate_synthetic.py generate --config configs/synthetic/exp_synthetic_del_v5q.yaml --out DIR
+# Paths are relative to this file.
+seed: 20261030
+reference: ../../data/reference/GRCh38_GIABv3_masked.fa
+mane: { gtf: ../../data/mane/MANE.GRCh38.v1.5.ensembl_genomic.gtf.gz, release: "1.5" }
+clingen_dosage: ../../data/clingen/ClinGen_gene_curation_list_GRCh38_2026-10-28.tsv
+# ACMG SF v3.2 genes with autosomal dominant inheritance; kept if ClinGen haploinsufficiency = 3
+genes: [APC, BRCA1, BRCA2, PALB2, TP53, MLH1, MSH2, MSH6, PMS2, PTEN, VHL, STK11, SMAD4, BMPR1A,
+        TSC1, TSC2, NF2, MEN1, RET, RB1, SDHB, SDHC, SDHD, SDHAF2, MAX, TMEM127, WT1, FBN1, TGFBR1,
+        TGFBR2, SMAD3, ACTA2, MYH11, COL3A1, MYBPC3, MYH7, TNNT2, TNNI3, TPM1, MYL2, MYL3, ACTC1,
+        PRKAG2, LMNA, FLNC, DSP, PKP2, DSG2, DSC2, TMEM43, TTN, DES, RBM20, BAG3, SCN5A, KCNQ1,
+        KCNH2, LDLR, APOB, PCSK9, ACVRL1, ENG, HNF1A]
+# loss of function does not cause the SF condition (RET: MEN2 is gain of function; APOB: LoF
+# causes hypobetalipoproteinemia, not familial hypercholesterolemia)
+exclude_genes: [RET, APOB]
+clinvar_vcf: ../../data/clinvar/clinvar_20260928.vcf.gz
+erepo: { file: ../../data/clingen/erepo_2026-10-15.tsv, release: "2026-10-15" }
+gnomad_vcf: null   # on the server: ../../data/vep/hg38/gnomad/gnomad.exomes.v4.1.sites.AF.vcf.bgz
+avoid_strata:
+  - ../../data/strata/v3.6/GRCh38_AllHomopolymers_ge7bp_imperfectge11bp_slop5.bed.gz
+  - ../../data/strata/v3.6/GRCh38_AllTandemRepeats_le50bp_slop5.bed.gz
+avoid_pad: 5
+cds_start_exclude: 100
+nmd_margin: 50
+indel_exon_margin: 3
+min_distance_bp: 500
+oversample: 8.0     # spare candidates for VEP rejections, gene cap and spacing
+max_per_gene: 18    # spread the variants over the genes (0 = no cap)
+targets: { "1-5": 30, "6-10": 30, "11-20": 30 }
+frameshift_bins: { "1-5": [1, 2, 4, 5], "6-10": [7, 8, 10], "11-20": [11, 13, 14, 16, 17, 19, 20] }
+frameshift_kinds: [del]
+deletion_exclusion: breakpoints
+samples: [positive4]
+template: exp_synthetic_del_v5q.template.yaml
+suite_out: ../suites/exp_synthetic_del_v5q.yaml

@@ -1,0 +1,68 @@
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "insilico-clinval"
+version = "0.1.0.dev0"
+description = "End-to-end in silico validation and regression testing of clinical genome sequencing pipelines, from simulated reads to reportable findings."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE.md" }  # Academic and Research License 1.0 (source-available); clinical/commercial licence on request
+authors = [{ name = "Bohuslav Dvorský" }]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+dependencies = [
+  "pysam>=0.22",
+  "isal>=1.8",  # ISA-L gzip (igzip) for the simulated FASTQ
+  "pydantic>=2.6",
+  "typer>=0.12",
+  "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8",
+  "pytest-cov>=5",
+  "ruff>=0.5",
+  "mypy>=1.10",
+  "types-PyYAML",
+]
+report = ["jinja2>=3.1", "matplotlib>=3.8", "pandas>=2.1"]
+
+[project.scripts]
+clinval = "insilico_clinval.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/insilico_clinval"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+files = ["src", "scripts"]
+
+[[tool.mypy.overrides]]
+module = ["pysam.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["isal.*"]  # ships no type hints
+follow_imports = "skip"
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+markers = [
+  "integration: needs external tools (bcftools, samtools; mason_simulator on PATH or CLINVAL_TEST_MASON_IMAGE)",
+]

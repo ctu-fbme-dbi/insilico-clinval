@@ -1,0 +1,187 @@
+# Difficult-contexts test set "difficult-v5q".
+# Small variants (SNV, indels <= 20 bp) inside GIAB v3.6 difficult strata (segmental duplications,
+# low mappability, homopolymers, tandem repeats), GRCh38 false duplications masked by GIAB, and
+# paralogues outside the v5.0q benchmark (PMS2, SMN1/SMN2, OTOA). Planted into the GIAB HG002
+# v5.0q background (assembly-based, T2T-HG002 Q100 v1.1; covers chrX/chrY); genome-mode Mason
+# simulation at 30x from the GIAB-masked GRCh38, so reads come only from the true copy of a false
+# duplication. The pipeline keeps its own (unmasked) reference.
+#
+# Expected outcomes: eRepo P/LP and B/LB in ACMG SF v3.2 genes are scored as secondary findings
+# (as in the acmg_sf32_* suites, same MONDO allowlist); ClinVar variants (>= 2 stars, any gene)
+# are scored at calling level only, their classification kept in the metadata.
+# Strata of every variant are recorded; "bg_v5.0q" marks variants inside the background
+# benchmark, so variants without it lie outside it (no HG002 background, GRCh38 structure).
+#
+#   clinval check-references --reference data/reference/GRCh38_GIABv3_masked.fa \
+#       --against <Sarek GATK.GRCh38 FASTA>
+#   clinval build-truth --suite configs/suites/difficult_v5q.yaml
+#   clinval simulate    --suite configs/suites/difficult_v5q.yaml --runtime configs/runtime/docker-local-build.yaml
+#   clinval compare ... --happy-gender --pipeline-reference <Sarek GATK.GRCh38 FASTA>
+schema_version: 1
+suite: { name: difficult-v5q, version: "0.1", seed: 20261025 }
+
+reference:
+  build: GRCh38
+  fasta: ../../data/reference/GRCh38_GIABv3_masked.fa
+
+sources:
+  clingen_erepo:
+    file: ../../data/clingen/erepo_2026-10-15.tsv
+    release: "2026-10-15"
+  clinvar:
+    vcf: ../../data/clinvar/clinvar_20260928.vcf.gz
+    release: "2026-09-28"
+  strata:
+    segdup: ../../data/strata/v3.6/GRCh38_segdups.bed.gz
+    low_mappability: ../../data/strata/v3.6/GRCh38_lowmappabilityall.bed.gz
+    homopolymer: ../../data/strata/v3.6/GRCh38_AllHomopolymers_ge7bp_imperfectge11bp_slop5.bed.gz
+    tandem_repeat: ../../data/strata/v3.6/GRCh38_AllTandemRepeats_le50bp_slop5.bed.gz
+    all_difficult: ../../data/strata/v3.6/GRCh38_alldifficultregions.bed.gz
+    cmrg: ../../data/strata/HG002_GRCh38_CMRG_smallvar_v1.00.bed
+    false_dup: ../../data/strata/v3.6/GRCh38_false_duplications_correct_copy.bed.gz
+    bg_v5.0q: ../../data/giab/HG002_GRCh38_v5.0q_smvar.benchmark.bed
+
+constraints:
+  min_distance_bp: 500
+  allowed_variant_types: [snv, insertion, deletion, delins]
+  max_indel_length: 20
+
+selection:
+  # ---- interpretation level: eRepo, ACMG SF AD genes, inside difficult strata ----
+  # ACMG SF v3.2 AD/SD genes with eRepo curations and the MONDO allowlist (as in acmg_sf32_full1)
+  - id: sf_plp_difficult
+    category: difficult
+    source: clingen_erepo
+    classification_allow: [pathogenic, likely_pathogenic]
+    genes: &sf_ad_genes [APC, BRCA1, BRCA2, PALB2, TP53, MLH1, MSH2, MSH6, PMS2, PTEN, VHL, FBN1, TNNT2, LDLR, MYH7, MYBPC3, TNNI3, ACTC1, MYL2, KCNQ1, ACVRL1, ENG, RYR1, HNF1A]
+    conditions: &sf_conditions
+      - MONDO:0021056   # familial adenomatous polyposis 1 (APC)
+      - MONDO:0021057   # classic or attenuated FAP (APC)
+      - MONDO:0021055   # classic FAP (APC)
+      - MONDO:0700268   # BRCA1-related cancer predisposition
+      - MONDO:0700269   # BRCA2-related cancer predisposition
+      - MONDO:0700272   # PALB2-related cancer predisposition
+      - MONDO:0018875   # Li-Fraumeni syndrome (TP53)
+      - MONDO:0007903   # Li-Fraumeni syndrome 1 (TP53)
+      - MONDO:0007356   # Lynch syndrome 1
+      - MONDO:0005835   # Lynch syndrome
+      - MONDO:0012249   # HNPCC type 2
+      - MONDO:0013699   # HNPCC type 4 (PMS2)
+      - MONDO:0017623   # PTEN hamartoma tumor syndrome
+      - MONDO:0008667   # von Hippel-Lindau disease
+      - MONDO:0007947   # Marfan syndrome (FBN1, SF aortopathies)
+      - MONDO:0005045   # hypertrophic cardiomyopathy
+      - MONDO:0005021   # dilated cardiomyopathy
+      - MONDO:0004994   # cardiomyopathy
+      - MONDO:0007750   # familial hypercholesterolemia (LDLR)
+      - MONDO:0100316   # long QT syndrome 1 (KCNQ1)
+      - MONDO:0010880   # HHT type 2 (ACVRL1)
+      - MONDO:0008535   # HHT type 1 (ENG)
+      - MONDO:0007783   # malignant hyperthermia susceptibility 1 (RYR1)
+      - MONDO:0018493   # malignant hyperthermia of anesthesia (RYR1)
+      - MONDO:0015967   # monogenic diabetes (HNF1A, SF MODY)
+    strata: &difficult [segdup, low_mappability, homopolymer, tandem_repeat]
+    count: 40
+    expected: { classification: [pathogenic, likely_pathogenic], reportable: true, level: both }
+    samples: [positive]
+  - id: sf_blb_difficult
+    category: difficult
+    source: clingen_erepo
+    classification_allow: [benign, likely_benign]
+    genes: *sf_ad_genes
+    conditions: *sf_conditions
+    strata: *difficult
+    count: 40
+    expected: { classification: [benign, likely_benign], reportable: false, level: both }
+    samples: [negative]
+
+  # ---- calling level: ClinVar >= 2 stars, any gene, one rule per main stratum ----
+  - id: clinvar_segdup
+    category: difficult
+    source: clinvar
+    clnsig_allow: [pathogenic, likely_pathogenic, pathogenic/likely_pathogenic]
+    min_stars: 2
+    strata: [segdup]
+    count: 60
+    required: true
+    expected: { classification: [pathogenic, likely_pathogenic], reportable: false, level: calling, basis: "calling-level control in a segmental duplication" }
+    samples: [positive]
+  - id: clinvar_low_mappability
+    category: difficult
+    source: clinvar
+    clnsig_allow: [pathogenic, likely_pathogenic, pathogenic/likely_pathogenic]
+    min_stars: 2
+    strata: [low_mappability]
+    exclude_strata: [segdup]
+    count: 60
+    required: true
+    expected: { classification: [pathogenic, likely_pathogenic], reportable: false, level: calling, basis: "calling-level control in a low-mappability region" }
+    samples: [negative]
+  - id: clinvar_homopolymer
+    category: difficult
+    source: clinvar
+    clnsig_allow: [pathogenic, likely_pathogenic, pathogenic/likely_pathogenic]
+    min_stars: 2
+    strata: [homopolymer]
+    exclude_strata: [segdup, low_mappability]
+    count: 60
+    required: true
+    expected: { classification: [pathogenic, likely_pathogenic], reportable: false, level: calling, basis: "calling-level control in a homopolymer" }
+    samples: [positive]
+  - id: clinvar_tandem_repeat
+    category: difficult
+    source: clinvar
+    clnsig_allow: [pathogenic, likely_pathogenic, pathogenic/likely_pathogenic]
+    min_stars: 2
+    strata: [tandem_repeat]
+    exclude_strata: [segdup, low_mappability, homopolymer]
+    count: 60
+    required: true
+    expected: { classification: [pathogenic, likely_pathogenic], reportable: false, level: calling, basis: "calling-level control in a tandem repeat" }
+    samples: [negative]
+  # true copies of GRCh38 false duplications (the false copy is masked in the simulation
+  # reference, unmasked in the pipeline's, so reads of the true copy can mismap)
+  - id: clinvar_false_dup
+    category: difficult
+    source: clinvar
+    clnsig_allow: [pathogenic, likely_pathogenic, pathogenic/likely_pathogenic, benign, likely_benign, benign/likely_benign]
+    min_stars: 1
+    strata: [false_dup]
+    count: 20
+    expected: { classification: [], reportable: false, level: calling, basis: "calling-level control in a GRCh38 false duplication" }
+    samples: [positive]
+  # paralogues outside the v5.0q benchmark (no HG002 background there)
+  - id: clinvar_paralog_outside_bg
+    category: difficult
+    source: clinvar
+    clnsig_allow: [pathogenic, likely_pathogenic, pathogenic/likely_pathogenic]
+    min_stars: 2
+    genes: [PMS2, SMN1, SMN2, OTOA]
+    strata: [segdup, low_mappability]
+    count: 20
+    expected: { classification: [pathogenic, likely_pathogenic], reportable: false, level: calling, basis: "calling-level control in a paralogue outside the background benchmark" }
+    samples: [negative]
+
+background:
+  name: GIAB_HG002
+  vcf: ../../data/giab/HG002_GRCh38_v5.0q_smvar.vcf.gz
+  bed: ../../data/giab/HG002_GRCh38_v5.0q_smvar.benchmark.bed
+  release: "v5.0q"
+  sex: male
+  restrict_to_bed: true
+  require_pass: true
+  max_length: 20
+  spanning_deletion: ref
+
+samples:
+  - { sample_id: positive, role: positive, sex: male }
+  - { sample_id: negative, role: negative, sex: male }
+
+simulation:
+  profile: ../profiles/illumina_2x150_30x_t8.yaml
+  mode: genome
+  genome_contigs: null   # chr1-22, chrX, chrY
+  mason_batch_bp: 500000000
+
+output:
+  directory: ../../runs/difficult_v5q

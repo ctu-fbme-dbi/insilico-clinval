@@ -1,0 +1,120 @@
+{
+  "$defs": {
+    "DockerSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "binary": {
+          "default": "docker",
+          "title": "Binary",
+          "type": "string"
+        },
+        "extra_args": {
+          "description": "added to every `docker run`, e.g. --platform",
+          "items": {
+            "type": "string"
+          },
+          "title": "Extra Args",
+          "type": "array"
+        }
+      },
+      "title": "DockerSettings",
+      "type": "object"
+    },
+    "ToolRuntime": {
+      "additionalProperties": false,
+      "properties": {
+        "executable": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "null = the tool name",
+          "title": "Executable"
+        },
+        "image": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "docker image, name@sha256:… preferred",
+          "title": "Image"
+        },
+        "runner": {
+          "anyOf": [
+            {
+              "enum": [
+                "local",
+                "docker"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "null = default_runner",
+          "title": "Runner"
+        },
+        "version_args": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "arguments that print the version; null = the tool's default",
+          "title": "Version Args"
+        }
+      },
+      "title": "ToolRuntime",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "default_runner": {
+      "default": "local",
+      "enum": [
+        "local",
+        "docker"
+      ],
+      "title": "Default Runner",
+      "type": "string"
+    },
+    "docker": {
+      "$ref": "#/$defs/DockerSettings"
+    },
+    "schema_version": {
+      "const": 1,
+      "default": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "tools": {
+      "additionalProperties": {
+        "$ref": "#/$defs/ToolRuntime"
+      },
+      "title": "Tools",
+      "type": "object"
+    }
+  },
+  "title": "RuntimeConfig",
+  "type": "object"
+}

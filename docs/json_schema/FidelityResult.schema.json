@@ -1,0 +1,553 @@
+{
+  "$defs": {
+    "CallingMetric": {
+      "additionalProperties": false,
+      "description": "One hap.py row: variant type x stratum (subtype `*`, genotype `*`).",
+      "properties": {
+        "dataset": {
+          "title": "Dataset",
+          "type": "string"
+        },
+        "f1": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "F1"
+        },
+        "precision": {
+          "$ref": "#/$defs/Proportion"
+        },
+        "recall": {
+          "$ref": "#/$defs/Proportion"
+        },
+        "stratum": {
+          "description": "`*` = all confident regions",
+          "title": "Stratum",
+          "type": "string"
+        },
+        "subtype": {
+          "description": "hap.py subtype, `*` = all",
+          "title": "Subtype",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "SNP",
+            "INDEL"
+          ],
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "dataset",
+        "type",
+        "stratum",
+        "subtype",
+        "recall",
+        "precision",
+        "f1"
+      ],
+      "title": "CallingMetric",
+      "type": "object"
+    },
+    "CallsetQc": {
+      "additionalProperties": false,
+      "description": "From `bcftools stats` in the QC regions.",
+      "properties": {
+        "dataset": {
+          "title": "Dataset",
+          "type": "string"
+        },
+        "het_hom": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Het Hom"
+        },
+        "indels": {
+          "title": "Indels",
+          "type": "integer"
+        },
+        "snvs": {
+          "title": "Snvs",
+          "type": "integer"
+        },
+        "ti_tv": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Ti Tv"
+        }
+      },
+      "required": [
+        "dataset",
+        "snvs",
+        "indels",
+        "ti_tv",
+        "het_hom"
+      ],
+      "title": "CallsetQc",
+      "type": "object"
+    },
+    "PlantingSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "by_status": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "By Status",
+          "type": "object"
+        },
+        "by_zygosity": {
+          "items": {
+            "$ref": "#/$defs/ZygositySummary"
+          },
+          "title": "By Zygosity",
+          "type": "array"
+        },
+        "complete": {
+          "$ref": "#/$defs/Proportion",
+          "description": "variants with status ok"
+        },
+        "runs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Runs",
+          "type": "array"
+        },
+        "samples": {
+          "title": "Samples",
+          "type": "integer"
+        },
+        "variants": {
+          "title": "Variants",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "runs",
+        "samples",
+        "variants",
+        "complete",
+        "by_status",
+        "by_zygosity"
+      ],
+      "title": "PlantingSummary",
+      "type": "object"
+    },
+    "Proportion": {
+      "additionalProperties": false,
+      "description": "k of n with a 95 % Wilson score interval; value and bounds are null when n = 0.",
+      "properties": {
+        "k": {
+          "title": "K",
+          "type": "integer"
+        },
+        "lower": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Lower"
+        },
+        "n": {
+          "title": "N",
+          "type": "integer"
+        },
+        "upper": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Upper"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "k",
+        "n",
+        "value",
+        "lower",
+        "upper"
+      ],
+      "title": "Proportion",
+      "type": "object"
+    },
+    "ReadQc": {
+      "additionalProperties": false,
+      "description": "From `samtools stats` in the QC regions (error and indel rates include true variants).",
+      "properties": {
+        "coverage_ge20": {
+          "description": "fraction of region bases with depth >= 20",
+          "title": "Coverage Ge20",
+          "type": "number"
+        },
+        "coverage_mean": {
+          "title": "Coverage Mean",
+          "type": "number"
+        },
+        "dataset": {
+          "title": "Dataset",
+          "type": "string"
+        },
+        "error_rate": {
+          "description": "mismatches / bases mapped (cigar)",
+          "title": "Error Rate",
+          "type": "number"
+        },
+        "fold80": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "mean / 20th percentile of depth; null if it is 0",
+          "title": "Fold80"
+        },
+        "indel_rate": {
+          "description": "indel events / bases mapped (cigar)",
+          "title": "Indel Rate",
+          "type": "number"
+        },
+        "insert_size_mean": {
+          "title": "Insert Size Mean",
+          "type": "number"
+        },
+        "insert_size_sd": {
+          "title": "Insert Size Sd",
+          "type": "number"
+        },
+        "reads_mapped": {
+          "description": "fraction of reads",
+          "title": "Reads Mapped",
+          "type": "number"
+        },
+        "reads_mq0": {
+          "title": "Reads Mq0",
+          "type": "number"
+        },
+        "reads_properly_paired": {
+          "title": "Reads Properly Paired",
+          "type": "number"
+        },
+        "reads_total": {
+          "title": "Reads Total",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "dataset",
+        "reads_total",
+        "reads_mapped",
+        "reads_properly_paired",
+        "reads_mq0",
+        "insert_size_mean",
+        "insert_size_sd",
+        "error_rate",
+        "indel_rate",
+        "coverage_mean",
+        "coverage_ge20",
+        "fold80"
+      ],
+      "title": "ReadQc",
+      "type": "object"
+    },
+    "RecallGap": {
+      "additionalProperties": false,
+      "properties": {
+        "baseline_recall": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Baseline Recall"
+        },
+        "dataset": {
+          "title": "Dataset",
+          "type": "string"
+        },
+        "flagged": {
+          "title": "Flagged",
+          "type": "boolean"
+        },
+        "gap": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "recall - baseline recall",
+          "title": "Gap"
+        },
+        "recall": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Recall"
+        },
+        "stratum": {
+          "title": "Stratum",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "SNP",
+            "INDEL"
+          ],
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "dataset",
+        "type",
+        "stratum",
+        "recall",
+        "baseline_recall",
+        "gap",
+        "flagged"
+      ],
+      "title": "RecallGap",
+      "type": "object"
+    },
+    "Zygosity": {
+      "enum": [
+        "het",
+        "hom",
+        "hemi"
+      ],
+      "title": "Zygosity",
+      "type": "string"
+    },
+    "ZygositySummary": {
+      "additionalProperties": false,
+      "properties": {
+        "alt_reads_median": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Alt Reads Median"
+        },
+        "alt_reads_min": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Alt Reads Min"
+        },
+        "vaf_max": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Vaf Max"
+        },
+        "vaf_median": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Vaf Median"
+        },
+        "vaf_min": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Vaf Min"
+        },
+        "variants": {
+          "title": "Variants",
+          "type": "integer"
+        },
+        "zygosity": {
+          "$ref": "#/$defs/Zygosity"
+        }
+      },
+      "required": [
+        "zygosity",
+        "variants",
+        "vaf_median",
+        "vaf_min",
+        "vaf_max",
+        "alt_reads_median",
+        "alt_reads_min"
+      ],
+      "title": "ZygositySummary",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Persisted as `fidelity.json`.",
+  "properties": {
+    "baseline": {
+      "title": "Baseline",
+      "type": "string"
+    },
+    "calling": {
+      "items": {
+        "$ref": "#/$defs/CallingMetric"
+      },
+      "title": "Calling",
+      "type": "array"
+    },
+    "callset_qc": {
+      "items": {
+        "$ref": "#/$defs/CallsetQc"
+      },
+      "title": "Callset Qc",
+      "type": "array"
+    },
+    "datasets": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "id -> label",
+      "title": "Datasets",
+      "type": "object"
+    },
+    "gaps": {
+      "items": {
+        "$ref": "#/$defs/RecallGap"
+      },
+      "title": "Gaps",
+      "type": "array"
+    },
+    "missing": {
+      "description": "raw outputs not found when assembling",
+      "items": {
+        "type": "string"
+      },
+      "title": "Missing",
+      "type": "array"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "pass_only": {
+      "title": "Pass Only",
+      "type": "boolean"
+    },
+    "planting": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/PlantingSummary"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "read_qc": {
+      "items": {
+        "$ref": "#/$defs/ReadQc"
+      },
+      "title": "Read Qc",
+      "type": "array"
+    },
+    "recall_gap": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Recall Gap"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version",
+    "name",
+    "baseline",
+    "datasets",
+    "pass_only",
+    "recall_gap",
+    "planting",
+    "read_qc",
+    "callset_qc",
+    "calling",
+    "gaps",
+    "missing"
+  ],
+  "title": "FidelityResult",
+  "type": "object"
+}

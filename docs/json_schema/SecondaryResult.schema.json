@@ -1,0 +1,69 @@
+{
+  "additionalProperties": false,
+  "description": "Persisted as `sut/<pipeline>/<sample_id>.secondary.json`; paths relative to the run dir.",
+  "properties": {
+    "adapter": {
+      "title": "Adapter",
+      "type": "string"
+    },
+    "alignment": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Alignment"
+    },
+    "filtered_vcf": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Filtered Vcf"
+    },
+    "pipeline": {
+      "title": "Pipeline",
+      "type": "string"
+    },
+    "raw_vcf": {
+      "title": "Raw Vcf",
+      "type": "string"
+    },
+    "sample_id": {
+      "title": "Sample Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "tool": {
+      "title": "Tool",
+      "type": "string"
+    },
+    "tool_version": {
+      "title": "Tool Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "sample_id",
+    "pipeline",
+    "adapter",
+    "tool",
+    "tool_version",
+    "alignment",
+    "raw_vcf",
+    "filtered_vcf"
+  ],
+  "title": "SecondaryResult",
+  "type": "object"
+}

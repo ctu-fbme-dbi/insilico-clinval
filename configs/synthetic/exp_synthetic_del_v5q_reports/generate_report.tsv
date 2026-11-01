@@ -1,0 +1,21 @@
+# genes	ACVRL1,APC,BAG3,BMPR1A,BRCA1,BRCA2,COL3A1,DSP,ENG,FBN1,FLNC,HNF1A,KCNH2,KCNQ1,LDLR,LMNA,MAX,MEN1,MLH1,MSH2,MSH6,MYBPC3,NF2,PALB2,PKP2,PMS2,PTEN,RB1,SCN5A,SDHAF2,SDHB,SDHC,SDHD,SMAD3,SMAD4,STK11,TGFBR1,TMEM127,TP53,TSC1,TSC2,VHL,WT1
+# genes dropped (not HI 3 or excluded)	ACTA2,ACTC1,APOB,DES,DSC2,DSG2,MYH11,MYH7,MYL2,MYL3,PCSK9,PRKAG2,RBM20,RET,TGFBR2,TMEM43,TNNI3,TNNT2,TPM1,TTN
+# gnomad checked	True
+# erepo checked	True
+# frameshift kinds	del
+# deletion exclusion	breakpoints
+1-5:candidates	55535
+1-5:in_clinvar	41366
+1-5:in_gnomad	651
+1-5:kept	240
+1-5:repeat_context	478
+11-20:candidates	51570
+11-20:in_clinvar	49957
+11-20:in_gnomad	586
+11-20:kept	180
+11-20:repeat_context	847
+6-10:candidates	53794
+6-10:in_clinvar	52155
+6-10:in_gnomad	630
+6-10:kept	233
+6-10:repeat_context	776
